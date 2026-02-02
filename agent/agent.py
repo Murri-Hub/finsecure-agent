@@ -2,9 +2,25 @@
 agent.py
 Agente AI con tool per audit finanziari (Agentic AI)
 """
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.huggingface import HuggingFaceLLM
 from tools.tools import find_omissions, compare_periods, audit_compliance
 import os
+
+# --- CONFIGURAZIONE MODELLI LOCALI ---
+Settings.embed_model = HuggingFaceEmbedding(
+    model_name="BAAI/bge-small-en-v1.5"
+)
+
+Settings.llm = HuggingFaceLLM(
+    model_name="HuggingFaceH4/zephyr-7b-beta",
+    tokenizer_name="HuggingFaceH4/zephyr-7b-beta",
+    context_window=3900,
+    max_new_tokens=256,
+    generate_kwargs={"temperature": 0.7, "top_k": 50, "top_p": 0.95},
+    device_map="auto",
+)
 
 # --- PATH ---
 BASE_DIR = "/content/finsecure-agent"
@@ -14,11 +30,9 @@ INDEX_PATH = os.path.join(BASE_DIR, "data/processed/")
 # --- LOAD / CREATE INDEX ---
 def load_index():
     if os.path.exists(os.path.join(INDEX_PATH, "docstore.json")):
-        # Carica index esistente
         storage_context = StorageContext.from_defaults(persist_dir=INDEX_PATH)
         index = load_index_from_storage(storage_context)
     else:
-        # Crea nuovo index
         documents = SimpleDirectoryReader(RAW_DATA_DIR).load_data()
         index = VectorStoreIndex.from_documents(documents)
         os.makedirs(INDEX_PATH, exist_ok=True)
@@ -30,7 +44,7 @@ def retrieve_chunks(query, top_k=5):
     index = load_index()
     query_engine = index.as_query_engine(
         similarity_top_k=top_k,
-        response_mode="no_text"  # Cambiato da "no_llm"
+        response_mode="no_text"
     )
     response = query_engine.query(query)
     chunks = [node.node.text for node in response.source_nodes]
