@@ -1,0 +1,35 @@
+FinSecure Analytics
+Nota di Audit Interno – Analisi Preliminare 2024
+
+Scopo del Documento
+La presente nota di audit interno ha l’obiettivo di fornire una valutazione preliminare
+dei principali fattori di rischio finanziario e operativo emersi nel corso del primo semestre 2024,
+sulla base delle informazioni disponibili.
+
+Osservazioni Generali
+Nel confronto tra il primo e il secondo trimestre del 2024,
+si osserva un aumento dei ricavi complessivi accompagnato da un incremento significativo
+dei costi operativi. Tale dinamica ha determinato una riduzione del margine operativo.
+
+Rischio di Credito
+L’esposizione al rischio di credito mostra un trend crescente.
+Nel Q2 2024, l’aumento dell’esposizione non risulta supportato
+da un’analisi dettagliata della qualità del credito dei nuovi clienti acquisiti.
+
+Rischio di Liquidità
+Non sono state riscontrate informazioni complete e aggiornate
+in merito alla liquidità disponibile nel secondo trimestre 2024.
+L’assenza di tali informazioni limita la capacità di valutare
+la sostenibilità finanziaria nel breve periodo.
+
+Compliance e Controlli
+Non risultano disponibili evidenze documentali aggiornate
+relative alla conformità normativa per il Q2 2024.
+Si raccomanda di verificare l’allineamento agli standard regolatori applicabili
+e di aggiornare la reportistica di compliance.
+
+Raccomandazioni Preliminari
+- Rafforzare il monitoraggio del rischio di credito
+- Integrare analisi sulla liquidità nei report periodici
+- Ripristinare una sezione dedicata alla compliance normativa
+- Migliorare la coerenza tra dati quantitativi e commenti qu
