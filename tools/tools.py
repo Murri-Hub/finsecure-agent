@@ -38,60 +38,81 @@ def compare_periods(chunks_q1, chunks_q2):
     """
     summary = []
     
-    # Confronto lunghezza/complessità
-    if len(chunks_q2) > len(chunks_q1) * 1.2:
-        summary.append("📊 Q2 mostra maggiore complessità documentale rispetto a Q1 (+20% chunk)")
-    
-    # Estrai numeri chiave (ricavi, costi, margini)
-    def extract_numbers(chunks):
-        numbers = {}
+    # Funzione helper per estrarre TUTTI i numeri da ogni chunk
+    def extract_all_numbers(chunks):
+        all_numbers = []
         for chunk in chunks:
             # Ricavi
-            ricavi = re.search(r'ricavi.*?(\d+[,.]?\d*)\s*milioni', chunk.lower())
-            if ricavi:
-                numbers['ricavi'] = float(ricavi.group(1).replace(',', '.'))
+            for match in re.finditer(r'ricavi.*?(\d+[,.]?\d*)\s*milioni', chunk.lower()):
+                val = float(match.group(1).replace(',', '.'))
+                all_numbers.append(('ricavi', val))
             # Margine
-            margine = re.search(r'margine.*?(\d+)%', chunk.lower())
-            if margine:
-                numbers['margine'] = int(margine.group(1))
+            for match in re.finditer(r'margine.*?(\d+[,.]?\d*)%', chunk.lower()):
+                val = float(match.group(1).replace(',', '.'))
+                all_numbers.append(('margine', val))
             # Rischio
-            rischio = re.search(r'rischio.*?(\d+[,.]?\d*)\s*milioni', chunk.lower())
-            if rischio:
-                numbers['rischio'] = float(rischio.group(1).replace(',', '.'))
-        return numbers
+            for match in re.finditer(r'rischio.*?(\d+[,.]?\d*)\s*milioni', chunk.lower()):
+                val = float(match.group(1).replace(',', '.'))
+                all_numbers.append(('rischio', val))
+        return all_numbers
     
-    q1_nums = extract_numbers(chunks_q1)
-    q2_nums = extract_numbers(chunks_q2)
+    q1_all = extract_all_numbers(chunks_q1)
+    q2_all = extract_all_numbers(chunks_q2)
     
-    # Confronta i numeri
+    # Prendi i valori massimi per ogni metrica (assumendo siano i più aggiornati)
+    def get_metrics(numbers_list):
+        metrics = {}
+        for metric, value in numbers_list:
+            if metric not in metrics or value > metrics[metric]:
+                metrics[metric] = value
+        return metrics
+    
+    q1_nums = get_metrics(q1_all)
+    q2_nums = get_metrics(q2_all)
+    
+    print(f"DEBUG Q1: {q1_nums}")  # Temporaneo per debug
+    print(f"DEBUG Q2: {q2_nums}")  # Temporaneo per debug
+    
+    # Confronta ricavi
     if 'ricavi' in q1_nums and 'ricavi' in q2_nums:
         diff = ((q2_nums['ricavi'] - q1_nums['ricavi']) / q1_nums['ricavi']) * 100
         if diff > 0:
             summary.append(f"📈 Ricavi aumentati del {diff:.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
-        else:
+        elif diff < 0:
             summary.append(f"📉 Ricavi diminuiti del {abs(diff):.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
+        else:
+            summary.append(f"➡️ Ricavi stabili a {q1_nums['ricavi']}M")
     
+    # Confronta margine
     if 'margine' in q1_nums and 'margine' in q2_nums:
         diff = q2_nums['margine'] - q1_nums['margine']
-        if diff < 0:
-            summary.append(f"⚠️ Margine operativo calato di {abs(diff)} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
-        elif diff > 0:
-            summary.append(f"✅ Margine operativo migliorato di {diff} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+        if diff < -2:
+            summary.append(f"🔴 Margine operativo calato significativamente di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+        elif diff < 0:
+            summary.append(f"⚠️ Margine operativo calato di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+        elif diff > 2:
+            summary.append(f"✅ Margine operativo migliorato significativamente di {diff:.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
     
+    # Confronta rischio
     if 'rischio' in q1_nums and 'rischio' in q2_nums:
         diff = ((q2_nums['rischio'] - q1_nums['rischio']) / q1_nums['rischio']) * 100
-        if diff > 10:
-            summary.append(f"🔴 Esposizione al rischio aumentata significativamente del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
+        if diff > 20:
+            summary.append(f"🔴 Esposizione al rischio aumentata in modo critico del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
+        elif diff > 10:
+            summary.append(f"⚠️ Esposizione al rischio aumentata significativamente del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
         elif diff > 0:
-            summary.append(f"⚠️ Esposizione al rischio aumentata del {diff:.1f}%")
+            summary.append(f"📊 Esposizione al rischio aumentata del {diff:.1f}%")
     
     # Analisi qualitativa
-    negative_keywords = ["riduzione", "calo", "diminuzione", "criticità", "volatil", "rischio"]
-    q2_negative_count = sum(1 for chunk in chunks_q2 for kw in negative_keywords if kw in chunk.lower())
-    q1_negative_count = sum(1 for chunk in chunks_q1 for kw in negative_keywords if kw in chunk.lower())
+    if len(chunks_q2) > len(chunks_q1) * 1.2:
+        summary.append("📄 Q2 mostra documentazione più complessa (+20% dettagli)")
     
-    if q2_negative_count > q1_negative_count:
-        summary.append(f"⚠️ Sentiment negativo aumentato in Q2 ({q2_negative_count} vs {q1_negative_count} segnali negativi)")
+    negative_keywords = ["riduzione", "calo", "diminuzione", "criticità", "volatile", "incerto"]
+    q2_neg = sum(1 for c in chunks_q2 for kw in negative_keywords if kw in c.lower())
+    q1_neg = sum(1 for c in chunks_q1 for kw in negative_keywords if kw in c.lower())
+    
+    if q2_neg > q1_neg + 2:
+        summary.append(f"⚠️ Sentiment più negativo in Q2 ({q2_neg} vs {q1_neg} segnali di rischio)")
     
     if not summary:
         return "➡️ Nessuna differenza significativa rilevata tra i periodi."
