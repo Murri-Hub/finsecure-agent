@@ -100,6 +100,10 @@ def compare_periods(chunks_q1, chunks_q2):
         elif diff > 0:
             summary.append(f"📊 Esposizione al rischio aumentata del {diff:.1f}%")
     
+    # Alert combinato critico
+    if q2_nums.get('margine', 0) < q1_nums.get('margine', 0) and q2_nums.get('rischio', 0) > q1_nums.get('rischio', 0):
+        summary.append("⚠️ ALERT: Combinazione critica di margine in calo e rischio in aumento")
+    
     # Analisi qualitativa
     if len(chunks_q2) > len(chunks_q1) * 1.2:
         summary.append("📄 Q2 mostra documentazione più complessa (+20% dettagli)")
@@ -113,9 +117,6 @@ def compare_periods(chunks_q1, chunks_q2):
     
     if not summary:
         return "➡️ Nessuna differenza significativa rilevata tra i periodi."
-
-    if q2_nums.get('margine', 0) < q1_nums.get('margine', 0) and q2_nums.get('rischio', 0) > q1_nums.get('rischio', 0):
-        summary.append("⚠️ ALERT: Combinazione critica di margine in calo e rischio in aumento")
     
     return "\n".join(summary)
 
