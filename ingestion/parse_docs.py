@@ -4,18 +4,13 @@ Parsing e indicizzazione documenti finanziari (versione Colab)
 """
 
 import os
-from llama_index.core import VectorStoreIndex, Document, Settings
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-
-Settings.embed_model = HuggingFaceEmbedding(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+from llama_index import GPTVectorStoreIndex, Document, SimpleDirectoryReader
 
 # --- PATH ---
-BASE_DIR = "/content/drive/MyDrive/finsecure-agent"
-RAW_DATA_DIR = f"{BASE_DIR}/data/raw"
-PROCESSED_DIR = f"{BASE_DIR}/data/processed"
-INDEX_SAVE_PATH = PROCESSED_DIR
+BASE_DIR = "/content/finsecure-agent"
+RAW_DATA_DIR = os.path.join(BASE_DIR, "data/raw")
+PROCESSED_DIR = os.path.join(BASE_DIR, "data/processed")
+INDEX_SAVE_PATH = os.path.join(PROCESSED_DIR, "index.json")
 
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
@@ -30,13 +25,11 @@ def parse_and_index():
                 content = f.read()
 
             doc_type = "audit" if "audit" in filename.lower() else "report"
-
+            period = "2024"
             if "Q1" in filename:
                 period = "Q1 2024"
             elif "Q2" in filename:
                 period = "Q2 2024"
-            else:
-                period = "2024"
 
             paragraphs = content.split("\n\n")
 
@@ -56,10 +49,12 @@ def parse_and_index():
 
     print(f"[INFO] Chunk creati: {len(documents)}")
 
-    index = VectorStoreIndex.from_documents(documents)
-    index.storage_context.persist(persist_dir=INDEX_SAVE_PATH)
+    # --- CREAZIONE INDICE ---
+    index = GPTVectorStoreIndex.from_documents(documents)
+    index.save_to_disk(INDEX_SAVE_PATH)
 
     print(f"[INFO] Indice salvato in {INDEX_SAVE_PATH}")
+
 
 if __name__ == "__main__":
     parse_and_index()
