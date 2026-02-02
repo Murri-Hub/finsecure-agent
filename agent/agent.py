@@ -2,25 +2,27 @@
 agent.py
 Agente AI con tool per audit finanziari (Agentic AI)
 """
-
-from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
 from tools.tools import find_omissions, compare_periods, audit_compliance
 import os
 
 # --- PATH ---
 BASE_DIR = "/content/finsecure-agent"
 RAW_DATA_DIR = os.path.join(BASE_DIR, "data/raw")
-INDEX_PATH = os.path.join(BASE_DIR, "data/processed/index.json")
+INDEX_PATH = os.path.join(BASE_DIR, "data/processed/")
 
 # --- LOAD / CREATE INDEX ---
 def load_index():
-    if os.path.exists(INDEX_PATH):
-        index = GPTVectorStoreIndex.load_from_disk(INDEX_PATH)
+    if os.path.exists(os.path.join(INDEX_PATH, "docstore.json")):
+        # Carica index esistente
+        storage_context = StorageContext.from_defaults(persist_dir=INDEX_PATH)
+        index = load_index_from_storage(storage_context)
     else:
+        # Crea nuovo index
         documents = SimpleDirectoryReader(RAW_DATA_DIR).load_data()
-        index = GPTVectorStoreIndex.from_documents(documents)
-        os.makedirs(os.path.dirname(INDEX_PATH), exist_ok=True)
-        index.save_to_disk(INDEX_PATH)
+        index = VectorStoreIndex.from_documents(documents)
+        os.makedirs(INDEX_PATH, exist_ok=True)
+        index.storage_context.persist(persist_dir=INDEX_PATH)
     return index
 
 # --- RETRIEVE CHUNKS ---
@@ -28,11 +30,11 @@ def retrieve_chunks(query, top_k=5):
     index = load_index()
     query_engine = index.as_query_engine(
         similarity_top_k=top_k,
-        response_mode="no_llm"  # Disattiva LLM esterni
+        response_mode="no_text"  # Cambiato da "no_llm"
     )
     response = query_engine.query(query)
     chunks = [node.node.text for node in response.source_nodes]
-    return chunks, response.response
+    return chunks, str(response)
 
 # --- AGENT ---
 def agent_answer(question: str):
@@ -40,10 +42,10 @@ def agent_answer(question: str):
         "tool_used": "none",
         "decision_reason": "Nessun tool specifico necessario"
     }
-
+    
     chunks, base_answer = retrieve_chunks(question)
     question_lower = question.lower()
-
+    
     # --- TOOL: Omissioni ---
     if "omission" in question_lower or "mancanza" in question_lower:
         decision_log["tool_used"] = "find_omissions"
@@ -52,7 +54,7 @@ def agent_answer(question: str):
             "o sezioni poco dettagliate nei documenti."
         )
         tool_result = find_omissions(chunks)
-
+    
     # --- TOOL: Confronto periodi ---
     elif ("confront" in question_lower) or ("q1" in question_lower and "q2" in question_lower):
         decision_log["tool_used"] = "compare_periods"
@@ -63,7 +65,7 @@ def agent_answer(question: str):
         chunks_q1, _ = retrieve_chunks("Q1 2024 rischio finanziario")
         chunks_q2, _ = retrieve_chunks("Q2 2024 rischio finanziario")
         tool_result = compare_periods(chunks_q1, chunks_q2)
-
+    
     # --- TOOL: Compliance ---
     elif "compliance" in question_lower or "conforme" in question_lower:
         decision_log["tool_used"] = "audit_compliance"
@@ -72,20 +74,20 @@ def agent_answer(question: str):
             "una verifica di possibili violazioni o eccezioni."
         )
         tool_result = audit_compliance(chunks)
-
+    
     else:
         tool_result = None
-
+    
     response = base_answer
     if tool_result:
         response += "\n\n[Analisi Tool]\n" + tool_result
-
+    
     response += (
         "\n\n[Decision Logging]\n"
         f"Tool utilizzato: {decision_log['tool_used']}\n"
         f"Motivazione: {decision_log['decision_reason']}"
     )
-
+    
     return response
 
 # --- MAIN ---
