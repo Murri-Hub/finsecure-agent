@@ -136,11 +136,9 @@ def audit_compliance(text_chunks):
     # Verifica completezza con pattern più flessibili
     all_text = " ".join(text_chunks).lower()
     
-    # Verifica sezioni con parole chiave multiple
+    # Verifica solo sezioni rilevanti per compliance
     checks = {
         "rischi": ["rischi", "risk", "esposizione"],
-        "liquidità": ["liquidità", "liquidity", "cash"],
-        "ricavi": ["ricavi", "revenue", "fatturato"],
         "compliance": ["compliance", "conforme", "normativ"]
     }
     
