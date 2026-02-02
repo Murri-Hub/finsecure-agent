@@ -3,6 +3,7 @@ agent.py
 Agente AI con tool per audit finanziari (Agentic AI)
 """
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
+from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
 from tools.tools import find_omissions, compare_periods, audit_compliance
@@ -50,6 +51,28 @@ def retrieve_chunks(query, top_k=5):
     chunks = [node.node.text for node in response.source_nodes]
     return chunks, str(response)
 
+# --- RETRIEVE CHUNKS BY METADATA ---
+def retrieve_chunks_by_metadata(period, top_k=10):
+    """
+    Recupera chunk filtrati per periodo usando i metadata
+    """
+    index = load_index()
+    
+    filters = MetadataFilters(
+        filters=[ExactMatchFilter(key="period", value=period)]
+    )
+    
+    retriever = index.as_retriever(
+        similarity_top_k=top_k,
+        filters=filters
+    )
+    
+    # Query generica per recuperare tutti i chunk del periodo
+    nodes = retriever.retrieve("KPI ricavi margine rischio credito liquidità")
+    chunks = [node.node.text for node in nodes]
+    
+    return chunks
+
 # --- AGENT ---
 def agent_answer(question: str):
     decision_log: dict[str, str] = {
@@ -76,10 +99,9 @@ def agent_answer(question: str):
             "La domanda richiede un confronto tra periodi temporali distinti "
             "per identificare variazioni di rischio."
         )
-        
-        # NUOVO CODICE:
-        chunks_q1, _ = retrieve_chunks("Q1 2024", top_k=10)
-        chunks_q2, _ = retrieve_chunks("Q2 2024", top_k=10)
+        # Usa il filtro metadata per separare Q1 e Q2
+        chunks_q1 = retrieve_chunks_by_metadata("Q1 2024", top_k=15)
+        chunks_q2 = retrieve_chunks_by_metadata("Q2 2024", top_k=15)
         tool_result = compare_periods(chunks_q1, chunks_q2)
     
     # --- TOOL: Compliance ---
@@ -116,4 +138,3 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
-
