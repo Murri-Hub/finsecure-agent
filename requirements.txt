@@ -1,2 +1,3 @@
 llama-index
 sentence-transformers
+llama-index-embeddings-huggingface
