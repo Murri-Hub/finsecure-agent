@@ -76,8 +76,10 @@ def agent_answer(question: str):
             "La domanda richiede un confronto tra periodi temporali distinti "
             "per identificare variazioni di rischio."
         )
-        chunks_q1, _ = retrieve_chunks("Q1 2024 rischio finanziario")
-        chunks_q2, _ = retrieve_chunks("Q2 2024 rischio finanziario")
+        
+        # NUOVO CODICE:
+        chunks_q1, _ = retrieve_chunks("Q1 2024", top_k=10)
+        chunks_q2, _ = retrieve_chunks("Q2 2024", top_k=10)
         tool_result = compare_periods(chunks_q1, chunks_q2)
     
     # --- TOOL: Compliance ---
@@ -114,3 +116,4 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
