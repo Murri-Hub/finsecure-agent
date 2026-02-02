@@ -117,7 +117,7 @@ def compare_periods(chunks_q1, chunks_q2):
     if q2_nums.get('margine', 0) < q1_nums.get('margine', 0) and q2_nums.get('rischio', 0) > q1_nums.get('rischio', 0):
         summary.append("⚠️ ALERT: Combinazione critica di margine in calo e rischio in aumento")
     
-return "\n".join(summary)
+    return "\n".join(summary)
 
 
 def audit_compliance(text_chunks):
@@ -159,4 +159,5 @@ def audit_compliance(text_chunks):
         return "✅ Nessun problema di compliance evidente."
     
     return "\n".join(issues)
+
 
