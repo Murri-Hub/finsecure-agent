@@ -70,9 +70,6 @@ def compare_periods(chunks_q1, chunks_q2):
     q1_nums = get_metrics(q1_all)
     q2_nums = get_metrics(q2_all)
     
-    print(f"DEBUG Q1: {q1_nums}")  # Temporaneo per debug
-    print(f"DEBUG Q2: {q2_nums}")  # Temporaneo per debug
-    
     # Confronta ricavi
     if 'ricavi' in q1_nums and 'ricavi' in q2_nums:
         diff = ((q2_nums['ricavi'] - q1_nums['ricavi']) / q1_nums['ricavi']) * 100
@@ -116,8 +113,11 @@ def compare_periods(chunks_q1, chunks_q2):
     
     if not summary:
         return "➡️ Nessuna differenza significativa rilevata tra i periodi."
+
+    if q2_nums.get('margine', 0) < q1_nums.get('margine', 0) and q2_nums.get('rischio', 0) > q1_nums.get('rischio', 0):
+        summary.append("⚠️ ALERT: Combinazione critica di margine in calo e rischio in aumento")
     
-    return "\n".join(summary)
+return "\n".join(summary)
 
 
 def audit_compliance(text_chunks):
@@ -128,17 +128,25 @@ def audit_compliance(text_chunks):
     issues = []
     
     for chunk in text_chunks:
-        # Flag di compliance
         for flag in compliance_flags:
             if flag in chunk.lower():
                 issues.append(f"🚨 Possibile problema: '{flag}' → {chunk[:150]}...")
-        
-        # Verifica presenza sezioni obbligatorie
-        required_sections = ["rischi", "liquidità", "ricavi", "compliance"]
-        
-    # Verifica completezza
+    
+    # Verifica completezza con pattern più flessibili
     all_text = " ".join(text_chunks).lower()
-    missing_sections = [sec for sec in required_sections if sec not in all_text]
+    
+    # Verifica sezioni con parole chiave multiple
+    checks = {
+        "rischi": ["rischi", "risk", "esposizione"],
+        "liquidità": ["liquidità", "liquidity", "cash"],
+        "ricavi": ["ricavi", "revenue", "fatturato"],
+        "compliance": ["compliance", "conforme", "normativ"]
+    }
+    
+    missing_sections = []
+    for section, keywords in checks.items():
+        if not any(kw in all_text for kw in keywords):
+            missing_sections.append(section)
     
     if missing_sections:
         issues.append(f"⚠️ Sezioni potenzialmente mancanti: {', '.join(missing_sections)}")
@@ -151,3 +159,4 @@ def audit_compliance(text_chunks):
         return "✅ Nessun problema di compliance evidente."
     
     return "\n".join(issues)
+
