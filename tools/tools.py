@@ -159,5 +159,3 @@ def audit_compliance(text_chunks):
         return "✅ Nessun problema di compliance evidente."
     
     return "\n".join(issues)
-
-
