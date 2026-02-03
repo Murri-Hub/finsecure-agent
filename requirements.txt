@@ -1,4 +1,24 @@
-llama-index
-sentence-transformers
-llama-index-embeddings-huggingface
-llama-index-llms-huggingface 
+# Core LlamaIndex
+llama-index-core>=0.10.0
+llama-index-embeddings-huggingface>=0.2.0
+llama-index-llms-huggingface>=0.2.0
+
+# Embeddings e modelli
+sentence-transformers>=2.2.0
+transformers>=4.30.0
+torch>=2.0.0
+
+# Visualizzazione
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Report PDF
+fpdf>=1.7.2
+
+# Machine Learning
+scikit-learn>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Utilities
+python-dateutil>=2.8.0
