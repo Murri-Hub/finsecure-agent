@@ -8,6 +8,7 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
 from tools.tools import find_omissions, compare_periods, audit_compliance
 import os
+import re
 
 # --- CONFIGURAZIONE MODELLI LOCALI ---
 Settings.embed_model = HuggingFaceEmbedding(
@@ -241,4 +242,5 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
