@@ -6,7 +6,7 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageCon
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
-from tools.tools import find_omissions, compare_periods, audit_compliance
+from tools.tools import find_omissions, compare_periods, audit_compliance, predict_risk_trend
 import os
 import re
 
@@ -116,7 +116,6 @@ def agent_answer(question: str):
 
     # --- TOOL: Predizione Trend ---
     elif "predizione" in question_lower or "previsione" in question_lower or "trend" in question_lower:
-        from tools.tools import predict_risk_trend  # Aggiungi questo
         decision_log["tool_used"] = "predict_risk_trend"
         decision_log["decision_reason"] = (
             "La domanda richiede una predizione del trend futuro "
@@ -243,6 +242,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
