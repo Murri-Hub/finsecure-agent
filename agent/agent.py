@@ -112,7 +112,35 @@ def agent_answer(question: str):
             "una verifica di possibili violazioni o eccezioni."
         )
         tool_result = audit_compliance(chunks)
+
+    # --- TOOL: Predizione Trend ---
+    elif "predizione" in question_lower or "previsione" in question_lower or "trend" in question_lower:
+        decision_log["tool_used"] = "predict_risk_trend"
+        decision_log["decision_reason"] = (
+            "La domanda richiede una predizione del trend futuro "
+            "basata sui dati storici disponibili."
+        )
     
+        # Estrai metriche Q1 e Q2
+        chunks_q1 = retrieve_chunks_by_metadata("Q1 2024", top_k=15)
+        chunks_q2 = retrieve_chunks_by_metadata("Q2 2024", top_k=15)
+        
+        # Estrai rischio da entrambi i periodi
+        def extract_risk(chunks):
+            for chunk in chunks:
+                match = re.search(r'rischio.*?(\d+[,.]?\d*)\s*milioni', chunk.lower())
+                if match:
+                    return float(match.group(1).replace(',', '.'))
+            return None
+        
+        q1_risk = extract_risk(chunks_q1)
+        q2_risk = extract_risk(chunks_q2)
+        
+        if q1_risk and q2_risk:
+            historical_data = {'q1_risk': q1_risk, 'q2_risk': q2_risk}
+            tool_result = predict_risk_trend(historical_data)
+        else:
+            tool_result = "⚠️ Impossibile predire: dati storici insufficienti"
     else:
         tool_result = None
     
@@ -128,6 +156,81 @@ def agent_answer(question: str):
     
     return response
 
+# Dopo aver raccolto tutti i risultati, genera il report
+def generate_full_audit(questions):
+    """
+    Esegue audit completo e genera report PDF + dashboard
+    """
+    from reports.report_generator import generate_audit_report
+    from tools.visualization import generate_dashboard  # o from tools.tools se hai scelto Opzione A
+    import re
+    
+    results = {
+        'metadata': {
+            'period': 'Q1-Q2 2024',
+            'analyst': 'FinSecure AI Agent'
+        }
+    }
+    
+    # Variabili per dashboard
+    q1_metrics = {}
+    q2_metrics = {}
+    
+    # Esegui tutte le analisi
+    for q in questions:
+        answer = agent_answer(q)
+        
+        if "omission" in q.lower() or "mancanza" in q.lower():
+            results['omissions'] = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
+        
+        elif "confront" in q.lower() or ("q1" in q.lower() and "q2" in q.lower()):
+            comparison_text = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
+            results['comparison'] = comparison_text
+            
+            # 🆕 ESTRAI METRICHE PER IL DASHBOARD
+            # Cerca pattern tipo "Q1: 11.8M → Q2: 12.4M"
+            ricavi_match = re.search(r'Q1:\s*(\d+\.?\d*)M.*?Q2:\s*(\d+\.?\d*)M', comparison_text)
+            if ricavi_match:
+                q1_metrics['ricavi'] = float(ricavi_match.group(1))
+                q2_metrics['ricavi'] = float(ricavi_match.group(2))
+            
+            margine_match = re.search(r'(\d+\.?\d*)%.*?→.*?(\d+\.?\d*)%', comparison_text)
+            if margine_match:
+                q1_metrics['margine'] = float(margine_match.group(1))
+                q2_metrics['margine'] = float(margine_match.group(2))
+            
+            rischio_match = re.search(r'Q1:\s*(\d+\.?\d*)M.*?Q2:\s*(\d+\.?\d*)M', 
+                                     comparison_text[comparison_text.find('rischio'):])
+            if rischio_match:
+                q1_metrics['rischio'] = float(rischio_match.group(1))
+                q2_metrics['rischio'] = float(rischio_match.group(2))
+        
+        elif "compliance" in q.lower() or "conforme" in q.lower():
+            results['compliance'] = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
+        
+        elif "simulazione" in q.lower() or "scenario" in q.lower():
+            results['simulation'] = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
+        
+        elif "predizione" in q.lower() or "trend" in q.lower():
+            results['prediction'] = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
+    
+    # 🆕 GENERA DASHBOARD SE CI SONO METRICHE
+    dashboard_path = None
+    if q1_metrics and q2_metrics:
+        print("📊 Generazione dashboard...")
+        dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
+        print(f"✅ Dashboard generata: {dashboard_path}")
+    
+    # Genera PDF
+    pdf_path = generate_audit_report(results)
+    print(f"✅ Report PDF generato: {pdf_path}")
+    
+    return {
+        'pdf': pdf_path,
+        'dashboard': dashboard_path
+    }
+
+
 # --- MAIN ---
 if __name__ == "__main__":
     print("FinSecure Agent – Modalità Agentic\n")
@@ -138,3 +241,4 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
