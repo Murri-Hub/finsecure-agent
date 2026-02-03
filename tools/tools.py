@@ -158,3 +158,68 @@ def audit_compliance(text_chunks):
         return "✅ Nessun problema di compliance evidente."
     
     return "\n".join(issues)
+
+def predict_risk_trend(historical_data):
+    """
+    Predice trend del rischio usando regressione lineare semplice
+    
+    Args:
+        historical_data: dict con chiavi 'q1_risk' e 'q2_risk' (valori in milioni)
+    
+    Returns:
+        str: messaggio con predizione Q3
+    """
+    from sklearn.linear_model import LinearRegression
+    
+    # Validazione input
+    if 'q1_risk' not in historical_data or 'q2_risk' not in historical_data:
+        return "⚠️ Impossibile predire: dati Q1 o Q2 mancanti"
+    
+    q1_risk = historical_data['q1_risk']
+    q2_risk = historical_data['q2_risk']
+    
+    # Prepara dati per regressione
+    X = [[1], [2]]  # Q1, Q2 (periodi)
+    y = [q1_risk, q2_risk]
+    
+    # Addestra modello
+    model = LinearRegression().fit(X, y)
+    
+    # Predici Q3
+    q3_prediction = model.predict([[3]])[0]
+    
+    # Calcola variazione percentuale
+    variation_pct = ((q3_prediction - q2_risk) / q2_risk * 100) if q2_risk != 0 else 0
+    
+    # Costruisci messaggio
+    results = [
+        f"\n📊 PREDIZIONE RISCHIO Q3 2024",
+        f"{'='*50}",
+        f"",
+        f"Storico:",
+        f"  • Q1 2024: {q1_risk:.1f}M",
+        f"  • Q2 2024: {q2_risk:.1f}M",
+        f"",
+        f"Predizione Q3 2024: {q3_prediction:.1f}M ({variation_pct:+.1f}%)",
+    ]
+    
+    # Alert se trend critico
+    if q3_prediction > q2_risk * 1.3:
+        results.append("")
+        results.append("🚨 ALERT CRITICO: Rischio previsto in aumento oltre il 30%!")
+        results.append("   Raccomandazioni:")
+        results.append("   - Ridurre esposizione su clienti ad alto rischio")
+        results.append("   - Aumentare riserve di liquidità")
+        results.append("   - Rivedere politiche di credito")
+    elif q3_prediction > q2_risk * 1.15:
+        results.append("")
+        results.append("⚠️ ALERT: Rischio in aumento moderato (+15-30%)")
+        results.append("   Monitorare attentamente l'evoluzione")
+    elif q3_prediction < q2_risk * 0.9:
+        results.append("")
+        results.append("✅ Trend positivo: Rischio in diminuzione")
+    else:
+        results.append("")
+        results.append("➡️ Trend stabile: Variazione contenuta")
+    
+    return "\n".join(results)
