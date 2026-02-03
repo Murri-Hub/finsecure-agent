@@ -116,6 +116,7 @@ def agent_answer(question: str):
 
     # --- TOOL: Predizione Trend ---
     elif "predizione" in question_lower or "previsione" in question_lower or "trend" in question_lower:
+        from tools.tools import predict_risk_trend  # Aggiungi questo
         decision_log["tool_used"] = "predict_risk_trend"
         decision_log["decision_reason"] = (
             "La domanda richiede una predizione del trend futuro "
@@ -242,5 +243,6 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
