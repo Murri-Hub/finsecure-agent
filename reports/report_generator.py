@@ -1,7 +1,7 @@
 """
 Generazione report PDF
 """
-def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs"):
+def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs", dashboard_path=None):
     """
     Genera report PDF professionale con analisi finanziarie
 
@@ -13,7 +13,19 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs")
             - 'simulation': str (opzionale, risultato simulazione)
             - 'metadata': dict (es. {'period': 'Q2 2024', 'analyst': 'AI Agent'})
         output_dir: directory di output
+        dashboard_path: path opzionale dell'immagine dashboard da includere
 
+    Returns:
+        str: path del PDF generato
+    """
+
+    from fpdf import FPDF
+    from datetime import datetime
+    import os
+
+    # Assicurati che la directory esista
+    os.makedirs(output_dir, exist_ok=True)
+    
     Returns:
         str: path del PDF generato
     """
@@ -105,12 +117,38 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs")
         add_section("3. Audit di Compliance Normativa",
                     analysis_results['compliance'],
                     icon="[3]")
+    
+    # 🆕 AGGIUNGI DASHBOARD SE DISPONIBILE
+    if dashboard_path and os.path.exists(dashboard_path):
+        pdf.ln(10)
+        pdf.set_draw_color(200, 200, 200)
+        pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+        pdf.ln(8)
+        
+        pdf.set_font("Arial", 'B', size=13)
+        pdf.cell(0, 10, txt="4. Dashboard Comparativa Q1 vs Q2", ln=True)
+        pdf.ln(5)
+        
+        # Calcola dimensioni per centrare l'immagine
+        page_width = 210  # A4 width in mm
+        margin = 10
+        img_width = page_width - 2 * margin
+        
+        # Aggiungi immagine
+        try:
+            pdf.image(dashboard_path, x=margin, w=img_width)
+            pdf.ln(10)
+        except Exception as e:
+            pdf.set_font("Arial", size=10)
+            pdf.multi_cell(0, 6, txt=f"[Errore nel caricamento dashboard: {str(e)}]")
+    
 
     # --- SEZIONE 4: SIMULAZIONE (opzionale) ---
     if 'simulation' in analysis_results and analysis_results['simulation']:
-        add_section("4. Simulazione Scenari di Rischio",
+        section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
+        add_section(f"{section_num}. Simulazione Scenari di Rischio",
                     analysis_results['simulation'],
-                    icon="[4]")
+                    icon=f"[{section_num}]")
 
     # --- SEZIONE CONCLUSIONI ---
     pdf.ln(5)
