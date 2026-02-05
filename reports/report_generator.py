@@ -25,16 +25,6 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
 
     # Assicurati che la directory esista
     os.makedirs(output_dir, exist_ok=True)
-    
-    Returns:
-        str: path del PDF generato
-    """
-    from fpdf import FPDF
-    from datetime import datetime
-    import os
-
-    # Assicurati che la directory esista
-    os.makedirs(output_dir, exist_ok=True)
 
     # Crea PDF
     pdf = FPDF()
