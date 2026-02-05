@@ -146,16 +146,19 @@ def agent_answer(question: str):
         tool_result = None
         
     response = ""
+    
     if tool_result:
-        response += "[Analisi Tool]\n" + tool_result
+        response = "[Analisi Tool]\n" + tool_result
     else:
-        response = base_answer  # Usa base_answer solo se non c'è tool_result
+        response = base_answer if base_answer else ""
     
     response += (
         "\n\n[Decision Logging]\n"
         f"Tool utilizzato: {decision_log['tool_used']}\n"
         f"Motivazione: {decision_log['decision_reason']}"
     )
+
+return response
 
     return response
 
@@ -233,10 +236,13 @@ def generate_full_audit(questions):
         'dashboard': dashboard_path
     }
     
-    # Genera PDF
-    pdf_path = generate_audit_report(results)
+    # Genera PDF (passa dashboard_path)
+    pdf_path = generate_audit_report(
+        analysis_results=results, 
+        dashboard_path=dashboard_path  # ← Passa la dashboard
+    )
     print(f"✅ Report PDF generato: {pdf_path}")
-    
+
     return {
         'pdf': pdf_path,
         'dashboard': dashboard_path
@@ -253,6 +259,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
