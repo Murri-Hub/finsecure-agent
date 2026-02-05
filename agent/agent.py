@@ -144,17 +144,19 @@ def agent_answer(question: str):
             tool_result = "⚠️ Impossibile predire: dati storici insufficienti"
     else:
         tool_result = None
-    
-    response = base_answer
+        
+    response = ""
     if tool_result:
-        response += "\n\n[Analisi Tool]\n" + tool_result
+        response += "[Analisi Tool]\n" + tool_result
+    else:
+        response = base_answer  # Usa base_answer solo se non c'è tool_result
     
     response += (
         "\n\n[Decision Logging]\n"
         f"Tool utilizzato: {decision_log['tool_used']}\n"
         f"Motivazione: {decision_log['decision_reason']}"
     )
-    
+
     return response
 
 # Dopo aver raccolto tutti i risultati, genera il report
@@ -163,7 +165,7 @@ def generate_full_audit(questions):
     Esegue audit completo e genera report PDF + dashboard
     """
     from reports.report_generator import generate_audit_report
-    from tools.visualization import generate_dashboard  # o from tools.tools se hai scelto Opzione A
+    from tools.visualization import generate_dashboard
     import re
     
     results = {
@@ -222,6 +224,15 @@ def generate_full_audit(questions):
         dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
         print(f"✅ Dashboard generata: {dashboard_path}")
     
+    # Genera PDF (passa dashboard_path)  # ← MODIFICA QUESTA RIGA
+    pdf_path = generate_audit_report(analysis_results=results, dashboard_path=dashboard_path)
+    print(f"✅ Report PDF generato: {pdf_path}")
+    
+    return {
+        'pdf': pdf_path,
+        'dashboard': dashboard_path
+    }
+    
     # Genera PDF
     pdf_path = generate_audit_report(results)
     print(f"✅ Report PDF generato: {pdf_path}")
@@ -242,6 +253,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
