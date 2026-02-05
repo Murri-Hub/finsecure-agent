@@ -158,8 +158,6 @@ def agent_answer(question: str):
         f"Motivazione: {decision_log['decision_reason']}"
     )
 
-return response
-
     return response
 
 # Dopo aver raccolto tutti i risultati, genera il report
@@ -259,6 +257,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
