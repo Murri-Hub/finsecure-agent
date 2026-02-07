@@ -23,7 +23,7 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
     from datetime import datetime
     import os
 
-    # Assicurati che la directory esista
+    # Si assicura che la directory esista
     os.makedirs(output_dir, exist_ok=True)
 
     # Crea PDF
@@ -40,7 +40,7 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
     pdf.set_font("Arial", size=10)
     pdf.cell(0, 8, txt=f"Data: {datetime.now().strftime('%d/%m/%Y %H:%M')}", ln=True, align='C')
 
-    # Metadata opzionali
+    # Metadata
     metadata = analysis_results.get('metadata', {})
     if 'period' in metadata:
         pdf.cell(0, 6, txt=f"Periodo: {metadata['period']}", ln=True, align='C')
@@ -92,23 +92,23 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
 
     # --- SEZIONE 1: ANALISI OMISSIONI ---
     if 'omissions' in analysis_results:
-        add_section("1. Analisi Omissioni e Completezza Dati",
+        add_section("Analisi Omissioni e Completezza Dati",
                     analysis_results['omissions'],
                     icon="[1]")
 
     # --- SEZIONE 2: CONFRONTO PERIODI ---
     if 'comparison' in analysis_results:
-        add_section("2. Confronto Periodi Q1 vs Q2",
+        add_section("Confronto Periodi Q1 vs Q2",
                     analysis_results['comparison'],
                     icon="[2]")
 
     # --- SEZIONE 3: COMPLIANCE ---
     if 'compliance' in analysis_results:
-        add_section("3. Audit di Compliance Normativa",
+        add_section("Audit di Compliance Normativa",
                     analysis_results['compliance'],
                     icon="[3]")
     
-    # 🆕 AGGIUNGI DASHBOARD SE DISPONIBILE
+    # --- SEZIONE 4: AGGIUNGI DASHBOARD SE DISPONIBILE ---
     if dashboard_path and os.path.exists(dashboard_path):
     
         pdf.add_page()  # Nuova pagina per la dashboard
@@ -116,7 +116,7 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
         # Titolo sezione
         pdf.set_font("Arial", 'B', size=13)
         pdf.set_fill_color(240, 240, 240)
-        pdf.cell(0, 10, txt="[4] 4. Dashboard Comparativa Q1 vs Q2", ln=True, fill=True)
+        pdf.cell(0, 10, txt="[4] Dashboard Comparativa Q1 vs Q2", ln=True, fill=True)
         pdf.ln(5)
         
         # Calcola dimensioni per centrare l'immagine
@@ -140,12 +140,12 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
             pdf.multi_cell(0, 6, txt=f"[Errore nel caricamento dashboard: {str(e)}]")
         
     
-        # --- SEZIONE 4: SIMULAZIONE ---
-        if 'simulation' in analysis_results and analysis_results['simulation']:
-            section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
-            add_section(f"{section_num}. Simulazione Scenari di Rischio",
-                        analysis_results['simulation'],
-                        icon=f"[{section_num}]")
+    # --- SEZIONE 5: SIMULAZIONE ---
+    if 'simulation' in analysis_results and analysis_results['simulation']:
+        section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
+        add_section(f"{section_num}. Simulazione Scenari di Rischio",
+                    analysis_results['simulation'],
+                    icon=f"[{section_num}]")
 
     # --- SEZIONE CONCLUSIONI ---
     pdf.ln(5)
