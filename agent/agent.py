@@ -223,28 +223,17 @@ def generate_full_audit(questions):
     if q1_metrics and q2_metrics:
         print("Generazione dashboard...")
         dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
-        print(f"Dashboard generata.")
-    
-    # Genera PDF (passa dashboard_path)  # ← MODIFICA QUESTA RIGA
-    pdf_path = generate_audit_report(analysis_results=results, dashboard_path=dashboard_path)
-    print(f"Report PDF generato.")
-    
-    return {
-        'pdf': pdf_path,
-        'dashboard': dashboard_path
-    }
+        print(f"Dashboard generata: {dashboard_path}")
     
     # Genera PDF (passa dashboard_path)
-    pdf_path = generate_audit_report(
-        analysis_results=results, 
-        dashboard_path=dashboard_path
-    )
-    print(f"Report PDF generato.")
-
+    pdf_path = generate_audit_report(analysis_results=results, dashboard_path=dashboard_path)
+    print(f"Report PDF generato: {pdf_path}")
+    
     return {
         'pdf': pdf_path,
         'dashboard': dashboard_path
     }
+    
 
 
 # --- MAIN ---
@@ -257,6 +246,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
