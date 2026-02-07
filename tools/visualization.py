@@ -1,7 +1,7 @@
 """
 Dashboard e visualizzazioni
 """
-def generate_dashboard(q1_data, q2_data, output_dir="/mnt/user-data/outputs"):
+def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     """
     Genera visualizzazioni comparative tra Q1 e Q2
 
