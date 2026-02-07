@@ -108,44 +108,44 @@ def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs",
                     analysis_results['compliance'],
                     icon="[3]")
     
-# 🆕 AGGIUNGI DASHBOARD SE DISPONIBILE
-if dashboard_path and os.path.exists(dashboard_path):
-
-    pdf.add_page()  # Nuova pagina per la dashboard
+    # 🆕 AGGIUNGI DASHBOARD SE DISPONIBILE
+    if dashboard_path and os.path.exists(dashboard_path):
     
-    # Titolo sezione
-    pdf.set_font("Arial", 'B', size=13)
-    pdf.set_fill_color(240, 240, 240)
-    pdf.cell(0, 10, txt="[4] 4. Dashboard Comparativa Q1 vs Q2", ln=True, fill=True)
-    pdf.ln(5)
+        pdf.add_page()  # Nuova pagina per la dashboard
+        
+        # Titolo sezione
+        pdf.set_font("Arial", 'B', size=13)
+        pdf.set_fill_color(240, 240, 240)
+        pdf.cell(0, 10, txt="[4] 4. Dashboard Comparativa Q1 vs Q2", ln=True, fill=True)
+        pdf.ln(5)
+        
+        # Calcola dimensioni per centrare l'immagine
+        page_width = 210  # A4 width in mm
+        page_height = 297  # A4 height in mm
+        margin = 10
+        img_width = page_width - 2 * margin
+        
+        # Altezza immagine proporzionale (14:10 aspect ratio della dashboard)
+        img_height = img_width * 10 / 14
+        
+        # Centra verticalmente
+        y_position = (page_height - img_height) / 2 - 10  # -10 per compensare il titolo
+        
+        # Aggiungi immagine
+        try:
+            pdf.image(dashboard_path, x=margin, w=img_width)
+            pdf.ln(10)
+        except Exception as e:
+            pdf.set_font("Arial", size=10)
+            pdf.multi_cell(0, 6, txt=f"[Errore nel caricamento dashboard: {str(e)}]")
+        
     
-    # Calcola dimensioni per centrare l'immagine
-    page_width = 210  # A4 width in mm
-    page_height = 297  # A4 height in mm
-    margin = 10
-    img_width = page_width - 2 * margin
-    
-    # Altezza immagine proporzionale (14:10 aspect ratio della dashboard)
-    img_height = img_width * 10 / 14
-    
-    # Centra verticalmente
-    y_position = (page_height - img_height) / 2 - 10  # -10 per compensare il titolo
-    
-    # Aggiungi immagine
-    try:
-        pdf.image(dashboard_path, x=margin, w=img_width)
-        pdf.ln(10)
-    except Exception as e:
-        pdf.set_font("Arial", size=10)
-        pdf.multi_cell(0, 6, txt=f"[Errore nel caricamento dashboard: {str(e)}]")
-    
-
-    # --- SEZIONE 4: SIMULAZIONE ---
-    if 'simulation' in analysis_results and analysis_results['simulation']:
-        section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
-        add_section(f"{section_num}. Simulazione Scenari di Rischio",
-                    analysis_results['simulation'],
-                    icon=f"[{section_num}]")
+        # --- SEZIONE 4: SIMULAZIONE ---
+        if 'simulation' in analysis_results and analysis_results['simulation']:
+            section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
+            add_section(f"{section_num}. Simulazione Scenari di Rischio",
+                        analysis_results['simulation'],
+                        icon=f"[{section_num}]")
 
     # --- SEZIONE CONCLUSIONI ---
     pdf.ln(5)
