@@ -141,7 +141,7 @@ def agent_answer(question: str):
             historical_data = {'q1_risk': q1_risk, 'q2_risk': q2_risk}
             tool_result = predict_risk_trend(historical_data)
         else:
-            tool_result = "⚠️ Impossibile predire: dati storici insufficienti"
+            tool_result = "Impossibile predire: dati storici insufficienti"
     else:
         tool_result = None
         
@@ -191,7 +191,7 @@ def generate_full_audit(questions):
             comparison_text = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
             results['comparison'] = comparison_text
             
-            # 🆕 ESTRAI METRICHE PER IL DASHBOARD
+            # ESTRAI METRICHE PER IL DASHBOARD
             # Cerca pattern tipo "Q1: 11.8M → Q2: 12.4M"
             ricavi_match = re.search(r'Q1:\s*(\d+\.?\d*)M.*?Q2:\s*(\d+\.?\d*)M', comparison_text)
             if ricavi_match:
@@ -218,16 +218,16 @@ def generate_full_audit(questions):
         elif "predizione" in q.lower() or "trend" in q.lower():
             results['prediction'] = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
     
-    # 🆕 GENERA DASHBOARD SE CI SONO METRICHE
+    # GENERA DASHBOARD SE CI SONO METRICHE
     dashboard_path = None
     if q1_metrics and q2_metrics:
-        print("📊 Generazione dashboard...")
+        print("Generazione dashboard...")
         dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
-        print(f"✅ Dashboard generata: {dashboard_path}")
+        print(f"Dashboard generata.")
     
     # Genera PDF (passa dashboard_path)  # ← MODIFICA QUESTA RIGA
     pdf_path = generate_audit_report(analysis_results=results, dashboard_path=dashboard_path)
-    print(f"✅ Report PDF generato: {pdf_path}")
+    print(f"Report PDF generato.")
     
     return {
         'pdf': pdf_path,
@@ -237,9 +237,9 @@ def generate_full_audit(questions):
     # Genera PDF (passa dashboard_path)
     pdf_path = generate_audit_report(
         analysis_results=results, 
-        dashboard_path=dashboard_path  # ← Passa la dashboard
+        dashboard_path=dashboard_path
     )
-    print(f"✅ Report PDF generato: {pdf_path}")
+    print(f"Report PDF generato.")
 
     return {
         'pdf': pdf_path,
@@ -257,6 +257,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
