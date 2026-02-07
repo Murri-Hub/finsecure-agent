@@ -1,7 +1,7 @@
 """
 Generazione report PDF
 """
-def generate_audit_report(analysis_results, output_dir="/mnt/user-data/outputs", dashboard_path=None):
+def generate_audit_report(analysis_results, output_dir="/outputs", dashboard_path=None):
     """
     Genera report PDF professionale con analisi finanziarie
 
