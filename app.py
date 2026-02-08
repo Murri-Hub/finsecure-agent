@@ -62,11 +62,23 @@ def audit_completo(progress=gr.Progress()):
         
         progress(1.0, desc="Generazione report...")
         risultati = generate_full_audit(domande)
+
+         # SPOSTA FILE IN /tmp PER GRADIO
+        dashboard_tmp = None
+        pdf_tmp = None
         
+        if risultati['dashboard']:
+            dashboard_tmp = "/tmp/dashboard_comparativa.png"
+            shutil.copy(risultati['dashboard'], dashboard_tmp)
+        
+        if risultati['pdf']:
+            pdf_tmp = "/tmp/audit_report.pdf"
+            shutil.copy(risultati['pdf'], pdf_tmp)
+            
         return (
             "\n".join(risultati_testo),
-            risultati['dashboard'],
-            risultati['pdf']
+            dashboard_tmp,  # ← CORRETTO: path in /tmp
+            pdf_tmp          # ← CORRETTO: path in /tmp
         )
     
     except Exception as e:
