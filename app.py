@@ -13,12 +13,13 @@ from agent.agent import agent_answer, generate_full_audit
 from ingestion.parse_docs import parse_and_index
 
 # Inizializzazione
-print("🚀 Avvio FinSecure AI Audit Agent...")
-print("📚 Indicizzazione documenti...")
+print(" Avvio FinSecure AI Audit Agent...")
+print(" Indicizzazione documenti...")
 parse_and_index()
-print("✅ Sistema pronto!")
+print(" Sistema pronto!")
 
 # --- FUNZIONE CHAT SEMPLICE ---
+# Usa agent_answer
 def chat(message, history):
     """
     Funzione per chat interattiva
@@ -34,9 +35,10 @@ def chat(message, history):
         response = agent_answer(message)
         return response
     except Exception as e:
-        return f"❌ Errore: {str(e)}\n\nRiprova con una domanda diversa."
+        return f"Errore: {str(e)}\n\nRiprova con una domanda diversa."
 
 # --- FUNZIONE AUDIT COMPLETO ---
+# Usa generate_full_audit
 def audit_completo(progress=gr.Progress()):
     """
     Esegue audit completo e restituisce risultati
@@ -68,7 +70,7 @@ def audit_completo(progress=gr.Progress()):
         )
     
     except Exception as e:
-        return f"❌ Errore durante l'audit: {str(e)}", None, None
+        return f"Errore durante l'audit: {str(e)}", None, None
 
 # --- ESEMPI DI DOMANDE ---
 esempi = [
@@ -83,7 +85,7 @@ esempi = [
 with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
     
     gr.Markdown("""
-    # 🏦 FinSecure Analytics - AI Audit Agent
+    # FinSecure Analytics - AI Audit Agent
     
     Agente AI per la gestione del rischio finanziario e audit interattivi.
     Utilizza LlamaIndex, Machine Learning e analisi predittiva per supportare decisioni finanziarie.
@@ -92,7 +94,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
     with gr.Tabs():
         
         # --- TAB 1: CHAT INTERATTIVA ---
-        with gr.Tab("💬 Chat Interattiva"):
+        with gr.Tab(" Chat Interattiva"):
             gr.Markdown("""
             ### Fai domande sui report finanziari
             
@@ -110,7 +112,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
             )
         
         # --- TAB 2: AUDIT COMPLETO ---
-        with gr.Tab("📊 Audit Completo"):
+        with gr.Tab(" Audit Completo"):
             gr.Markdown("""
             ### Genera report completo automatico
             
@@ -118,14 +120,14 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
             e genera dashboard + PDF professionale.
             """)
             
-            audit_btn = gr.Button("🚀 Avvia Audit Completo", variant="primary", size="lg")
+            audit_btn = gr.Button(" Avvia Audit Completo", variant="primary", size="lg")
             
             with gr.Row():
                 with gr.Column(scale=2):
                     risultati_output = gr.Markdown(label="Risultati Analisi")
                 
                 with gr.Column(scale=1):
-                    dashboard_output = gr.Image(label="📊 Dashboard Q1 vs Q2")
+                    dashboard_output = gr.Image(label="Dashboard Q1 vs Q2")
             
             pdf_output = gr.File(label="📄 Scarica Report PDF")
             
@@ -135,33 +137,33 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
             )
         
         # --- TAB 3: INFO ---
-        with gr.Tab("ℹ️ Informazioni"):
+        with gr.Tab(" Informazioni"):
             gr.Markdown("""
-            ## 🎯 Funzionalità Implementate
+            ## Funzionalità Implementate
             
-            ### 1️⃣ Analisi Automatizzata
+            ### Analisi Automatizzata
             - Estrazione KPI (ricavi, margini, rischio, liquidità)
             - Identificazione omissioni e anomalie
             - Alert automatici su soglie critiche
             
-            ### 2️⃣ Simulazione Scenari
+            ### Simulazione Scenari
             - Scenario di crisi (ricavi -20%, rischio +50%)
             - Scenario di crescita (ricavi +15%, rischio -10%)
             - Scenario rialzo tassi (costi +10%, rischio +25%)
             
-            ### 3️⃣ Predizione Trend
+            ### Predizione Trend
             - Regressione lineare su dati storici Q1-Q2
             - Stima rischio Q3 con intervallo di confidenza
             - Raccomandazioni automatiche
             
-            ### 4️⃣ Dashboard e Report
+            ### Dashboard e Report
             - Grafici comparativi professionali
             - Report PDF con tutte le analisi
             - Export dati per ulteriori elaborazioni
             
             ---
             
-            ## 🛠️ Tecnologie Utilizzate
+            ## Tecnologie Utilizzate
             
             - **LlamaIndex**: RAG e retrieval semantico
             - **HuggingFace**: Embeddings (bge-small) + LLM (Zephyr-7B)
@@ -171,7 +173,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
             
             ---
             
-            ## 📚 Documenti Analizzati
+            ## Documenti Analizzati
             
             - Report Finanziario Q1 2024
             - Report Finanziario Q2 2024
@@ -187,7 +189,7 @@ with gr.Blocks(theme=gr.themes.Soft(), title="FinSecure AI Audit") as demo:
     gr.Markdown("""
     ---
     <div style='text-align: center; color: gray; font-size: 0.9em;'>
-    🤖 Powered by LlamaIndex & HuggingFace | 🔒 Dati fittizi per scopi dimostrativi
+     Powered by LlamaIndex & HuggingFace | Dati fittizi per scopi dimostrativi
     </div>
     """)
 
