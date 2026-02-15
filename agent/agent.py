@@ -12,6 +12,7 @@ from tools.tools import find_omissions, compare_periods, audit_compliance, predi
 from transformers import BitsAndBytesConfig
 import os
 import re
+import torch
 
 # --- CONFIGURAZIONE MODELLI LOCALI ---
 Settings.embed_model = HuggingFaceEmbedding(
@@ -264,6 +265,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
