@@ -1,10 +1,10 @@
 # ===============================
 # FinSecure AI Audit Agent
-# Stable Colab Python 3.12
+# Colab Python 3.12 SAFE
 # ===============================
 
-# --- LlamaIndex (Python 3.12 compatible) ---
-llama-index-core==0.11.23
+# --- LlamaIndex (versioni allineate) ---
+llama-index==0.11.23
 llama-index-embeddings-huggingface==0.6.1
 llama-index-llms-huggingface==0.6.1
 
@@ -21,14 +21,14 @@ numpy==1.26.4
 pandas>=2.2.0
 scikit-learn>=1.4.0
 
-# --- Viz ---
+# --- Visualization ---
 matplotlib>=3.8.0
 seaborn>=0.13.0
 
 # --- PDF ---
 fpdf==1.7.2
 
-# --- Utils ---
+# --- Utilities ---
 python-dateutil>=2.8.2
 
 # --- Web ---
