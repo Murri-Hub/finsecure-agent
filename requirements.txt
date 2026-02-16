@@ -17,19 +17,19 @@ sentence-transformers
 torch
 
 # --- Scientific ---
-numpy==1.26.4
-pandas>=2.2.0
-scikit-learn>=1.4.0
+numpy
+pandas
+scikit-learn
 
 # --- Visualization ---
-matplotlib>=3.8.0
-seaborn>=0.13.0
+matplotlib
+seaborn
 
 # --- PDF ---
-fpdf==1.7.2
+fpdf
 
 # --- Utilities ---
-python-dateutil>=2.8.2
+python-dateutil
 
 # --- Web ---
-gradio==4.44.1
+gradio
