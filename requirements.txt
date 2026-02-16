@@ -1,14 +1,14 @@
 # ===============================
 # FinSecure AI Audit Agent
-# Stable Colab Environment (2026)
+# Stable Colab Python 3.12
 # ===============================
 
-# --- Core LlamaIndex ---
-llama-index-core==0.11.14
-llama-index-embeddings-huggingface==0.5.1
-llama-index-llms-huggingface==0.5.1
+# --- LlamaIndex (Python 3.12 compatible) ---
+llama-index-core==0.11.23
+llama-index-embeddings-huggingface==0.6.1
+llama-index-llms-huggingface==0.6.1
 
-# --- Transformers stack (compatibile tra loro) ---
+# --- Transformers stack ---
 transformers==4.41.2
 huggingface-hub==0.34.6
 accelerate==0.30.1
@@ -16,20 +16,20 @@ bitsandbytes==0.43.1
 sentence-transformers==2.7.0
 torch>=2.1.0
 
-# --- Scientific stack (compatibile con Colab) ---
+# --- Scientific ---
 numpy==1.26.4
 pandas>=2.2.0
 scikit-learn>=1.4.0
 
-# --- Visualization ---
+# --- Viz ---
 matplotlib>=3.8.0
 seaborn>=0.13.0
 
 # --- PDF ---
 fpdf==1.7.2
 
-# --- Utilities ---
+# --- Utils ---
 python-dateutil>=2.8.2
 
-# --- Web Interface ---
+# --- Web ---
 gradio==4.44.1
