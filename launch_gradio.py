@@ -16,13 +16,6 @@ def main():
     print("🚀 FinSecure AI Audit - Gradio Interface")
     print("=" * 60)
     
-    print("✅ Moduli importati!")
-    
-    # Crea interfaccia
-    print("\n🔨 Creazione interfaccia...")
-    demo = create_interface()
-    print("✅ Interfaccia pronta!")
-    
     # Lancio
     print("\n🌐 Avvio server Gradio...")
     print("=" * 60 + "\n")
