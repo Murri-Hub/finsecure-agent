@@ -1,35 +1,35 @@
-# FinSecure AI Audit Agent - Requirements
-# Versioni testate e compatibili per Colab
+# ===============================
+# FinSecure AI Audit Agent
+# Stable Colab Environment (2026)
+# ===============================
 
-# Core LlamaIndex
-llama-index-core>=0.10.0,<0.12.0
-llama-index-embeddings-huggingface>=0.2.0,<0.7.0
-llama-index-llms-huggingface>=0.2.0,<0.7.0
+# --- Core LlamaIndex ---
+llama-index-core==0.11.14
+llama-index-embeddings-huggingface==0.5.1
+llama-index-llms-huggingface==0.5.1
 
-# Transformers e modelli (IMPORTANTE: <5 per compatibilità LlamaIndex)
-transformers>=4.37.0,<5.0.0
-sentence-transformers>=2.2.0
-torch>=2.0.0
-accelerate>=0.27.0
-bitsandbytes>=0.43.0
+# --- Transformers stack (compatibile tra loro) ---
+transformers==4.41.2
+huggingface-hub==0.34.6
+accelerate==0.30.1
+bitsandbytes==0.43.1
+sentence-transformers==2.7.0
+torch>=2.1.0
 
-# Visualizzazione
-matplotlib>=3.7.0
-seaborn>=0.12.0
+# --- Scientific stack (compatibile con Colab) ---
+numpy==1.26.4
+pandas>=2.2.0
+scikit-learn>=1.4.0
 
-# Report PDF
-fpdf>=1.7.2
+# --- Visualization ---
+matplotlib>=3.8.0
+seaborn>=0.13.0
 
-# Machine Learning
-scikit-learn>=1.3.0
-numpy>=1.24.0,<2.0.0  # NumPy 2.x ha breaking changes
-pandas>=2.0.0
+# --- PDF ---
+fpdf==1.7.2
 
-# Utilities
-python-dateutil>=2.8.0
+# --- Utilities ---
+python-dateutil>=2.8.2
 
-# Web Interface
-gradio>=4.0.0,<5.0.0
-
-# Optional: silenza warning
-jedi>=0.16  # Fix per warning ipython
+# --- Web Interface ---
+gradio==4.44.1
