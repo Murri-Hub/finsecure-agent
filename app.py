@@ -5,15 +5,15 @@ Entry point per FinSecure AI Audit Agent
 import sys
 import os
 
-# 1️⃣ PRIMA DI TUTTO: Sopprimi warning
+# Soppressione warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['PYTHONWARNINGS'] = 'ignore'
 
-# 2️⃣ Setup path
+# Setup path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
-# 3️⃣ SOLO ORA importa moduli
+# Import moduli
 from ingestion.parse_docs import parse_and_index
 from ui.gradio_interface import create_interface
 
