@@ -1,22 +1,24 @@
 """
 app.py
-Entry point per FinSecure AI Audit Agent
+Inizializzazione FinSecure AI Audit Agent (SOLO setup, NO interfaccia)
 """
 import sys
 import os
+
+# Sopprimi warning TensorFlow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Aggiungi path per import
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
 from ingestion.parse_docs import parse_and_index
-from ui.gradio_interface import create_interface
 
-def main():
-    """Inizializza e avvia l'applicazione"""
+def initialize():
+    """Inizializza il sistema (indicizzazione documenti)"""
     
     print("=" * 60)
-    print("🚀 FinSecure AI Audit Agent")
+    print("🚀 FinSecure AI Audit Agent - Inizializzazione")
     print("=" * 60)
     
     # Indicizzazione documenti
@@ -28,22 +30,12 @@ def main():
         print(f"⚠️ Errore durante l'indicizzazione: {e}")
         print("Continuando comunque...")
     
-    # Crea interfaccia
-    print("\n🎨 Creazione interfaccia Gradio...")
-    demo = create_interface()
-    print("✅ Interfaccia pronta!")
-    
-    # Lancio
-    print("\n🌐 Avvio server Gradio...")
+    print("\n✅ Sistema inizializzato!")
+    print("\nPer lanciare l'interfaccia Gradio:")
+    print("  python launch_gradio.py")
+    print("\nOppure importa create_interface da ui.gradio_interface")
     print("=" * 60)
-    
-    demo.launch(
-        share=True,      # Link pubblico temporaneo (72h)
-        debug=True,      # Modalità debug
-        server_name="0.0.0.0",
-        server_port=7860
-    )
 
 
 if __name__ == "__main__":
-    main()
+    initialize()
