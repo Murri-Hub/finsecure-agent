@@ -6,6 +6,12 @@ import sys
 import os
 print("\n🎨 Importazione moduli UI...")
 from ui.gradio_interface import create_interface
+print("✅ Moduli importati!")
+
+# Crea interfaccia
+print("\n🔨 Creazione interfaccia...")
+demo = create_interface()
+print("✅ Interfaccia pronta!")
 
 # Sopprimi warning TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
