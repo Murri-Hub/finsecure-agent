@@ -5,10 +5,10 @@ llama-index-llms-huggingface>=0.2.0
 
 # Embeddings e modelli
 sentence-transformers>=2.2.0
-transformers>=4.30.0
 torch>=2.0.0
-bitsandbytes>=0.43.0
-accelerate>=0.27.0
+#transformers>=4.30.0
+#bitsandbytes>=0.43.0
+#accelerate>=0.27.0
 
 # Visualizzazione
 matplotlib>=3.7.0
