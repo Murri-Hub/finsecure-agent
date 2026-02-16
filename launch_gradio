@@ -29,14 +29,15 @@ def main():
     
     # Lancio
     print("\n🌐 Avvio server Gradio...")
-    print("=" * 60)
+    print("=" * 60 + "\n")
+    
+    demo.queue()  # Abilita queue per Colab
     
     demo.launch(
-        share=True,
+        share=False,
         debug=True,
-        server_name="0.0.0.0",
-        server_port=7860,
-        inline=False  # Importante per Colab
+        inline=True,
+        height=800
     )
 
 
