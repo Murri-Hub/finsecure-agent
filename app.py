@@ -4,6 +4,8 @@ Inizializzazione FinSecure AI Audit Agent (SOLO setup, NO interfaccia)
 """
 import sys
 import os
+print("\n🎨 Importazione moduli UI...")
+from ui.gradio_interface import create_interface
 
 # Sopprimi warning TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
