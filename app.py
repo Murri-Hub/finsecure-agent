@@ -1,28 +1,22 @@
 """
 app.py
-Inizializzazione FinSecure AI Audit Agent (SOLO setup, NO interfaccia)
+Entry point per FinSecure AI Audit Agent
 """
 import sys
 import os
-print("\n🎨 Importazione moduli UI...")
-from ui.gradio_interface import create_interface
-print("✅ Moduli importati!")
 
-def demo():
-    # Crea interfaccia
-    print("\n🔨 Creazione interfaccia...")
-    demo = create_interface()
-    print("✅ Interfaccia pronta!")
-    return demo
-
-# Sopprimi warning TensorFlow
+# 1️⃣ PRIMA DI TUTTO: Sopprimi warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['PYTHONWARNINGS'] = 'ignore'
 
-# Aggiungi path per import
+# 2️⃣ Setup path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
+# 3️⃣ SOLO ORA importa moduli
 from ingestion.parse_docs import parse_and_index
+from ui.gradio_interface import create_interface
+
 
 def initialize():
     """Inizializza il sistema (indicizzazione documenti)"""
@@ -31,7 +25,6 @@ def initialize():
     print("🚀 FinSecure AI Audit Agent - Inizializzazione")
     print("=" * 60)
     
-    # Indicizzazione documenti
     print("\n📚 Indicizzazione documenti in corso...")
     try:
         parse_and_index()
@@ -41,12 +34,28 @@ def initialize():
         print("Continuando comunque...")
     
     print("\n✅ Sistema inizializzato!")
-    print("\nPer lanciare l'interfaccia Gradio:")
-    print("  python launch_gradio.py")
-    print("\nOppure importa create_interface da ui.gradio_interface")
-    print("=" * 60)
+
+
+def launch_interface():
+    """Crea e lancia l'interfaccia Gradio"""
+    
+    print("\n🎨 Creazione interfaccia Gradio...")
+    demo = create_interface()
+    print("✅ Interfaccia creata!")
+    
+    print("\n🚀 Lancio interfaccia...")
+    demo.queue().launch(
+        share=True,
+        inline=False,
+        debug=False
+    )
+
+
+def main():
+    """Workflow completo: inizializza + lancia interfaccia"""
+    initialize()
+    launch_interface()
 
 
 if __name__ == "__main__":
-    initialize()
-    demo = demo()
+    main()
