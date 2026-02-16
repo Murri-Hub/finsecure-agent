@@ -16,10 +16,6 @@ def main():
     print("🚀 FinSecure AI Audit - Gradio Interface")
     print("=" * 60)
     
-    # Import solo quando necessario (lazy loading)
-    print("\n🎨 Importazione moduli UI...")
-    from ui.gradio_interface import create_interface
-    
     print("✅ Moduli importati!")
     
     # Crea interfaccia
