@@ -11,10 +11,12 @@ sys.path.append(BASE_DIR)
 
 def main():
     """Lancia solo l'interfaccia (assumendo che i modelli siano già caricati)"""
-    
+    from app import demo
     print("=" * 60)
     print("🚀 FinSecure AI Audit - Gradio Interface")
     print("=" * 60)
+
+    demo = demo()
     
     # Lancio
     print("\n🌐 Avvio server Gradio...")
