@@ -1,4 +1,5 @@
 """
+simulation.py
 Simulazione scenari di rischio
 """
 import re
@@ -129,3 +130,4 @@ def simulate_risk_scenario(chunks, scenario_type="crisis"):
 
 
     return "\n".join(results)
+
