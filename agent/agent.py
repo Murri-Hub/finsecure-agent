@@ -1,6 +1,6 @@
 """
 agent.py
-Agente AI con tool per audit finanziari (Agentic AI)
+Agente AI con tool per audit finanziari
 """
 
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
@@ -238,3 +238,4 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
