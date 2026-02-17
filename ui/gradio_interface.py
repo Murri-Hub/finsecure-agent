@@ -334,7 +334,7 @@ def create_interface():
                 - Report Finanziario Q2 2024
                 - Note di Audit Interno
 
-                **Tempi di risposta**
+                **Tempi di risposta:**
                 - Circa 30-90 secondi a domanda in chat
                 - Almeno 1 minuto per l'audit
                 """)
