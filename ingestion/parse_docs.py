@@ -4,12 +4,6 @@ Parsing e indicizzazione documenti finanziari
 """
 import os
 from llama_index.core import VectorStoreIndex, Document, SimpleDirectoryReader, Settings
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-
-# CONFIGURAZIONE EMBEDDINGS LOCALI
-Settings.embed_model = HuggingFaceEmbedding(
-    model_name="BAAI/bge-small-en-v1.5"
-)
 
 # PATH
 BASE_DIR = "/content/finsecure-agent"
@@ -59,3 +53,4 @@ def parse_and_index():
 
 if __name__ == "__main__":
     parse_and_index()
+
