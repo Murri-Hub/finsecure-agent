@@ -1,15 +1,14 @@
 """
 conversational_agent_improved.py
-Versione migliorata della funzione conversazionale per l'agente AI
+Funzione conversazionale per l'agente AI
 """
 from llama_index.core import Settings
 from agent.agent import agent_answer
 import re
 
-
 def conversational_agent_answer(question: str, conversation_history: list = None):
     """
-    Risposta conversazionale migliorata che:
+    Risposta conversazionale che:
     - Integra i risultati dei tool in modo naturale
     - Evidenzia chiaramente rischi, omissioni e ambiguità
     - Suggerisce azioni correttive concrete
@@ -27,53 +26,53 @@ def conversational_agent_answer(question: str, conversation_history: list = None
     if conversation_history is None:
         conversation_history = []
     
-    # 1️⃣ ESEGUI ANALISI CON I TOOL
+    # ESEGUE ANALISI CON I TOOL
     analysis = agent_answer(question)
     
-    # 2️⃣ ESTRAI COMPONENTI DALL'ANALISI
+    # ESTRAE COMPONENTI DALL'ANALISI
     components = _parse_analysis_components(analysis)
     
-    # 3️⃣ IDENTIFICA RISCHI E AMBIGUITÀ
+    # IDENTIFICA RISCHI E AMBIGUITÀ
     risks = _identify_risks(components)
     ambiguities = _identify_ambiguities(components)
     
-    # 4️⃣ GENERA AZIONI CORRETTIVE
+    # GENERA AZIONI CORRETTIVE
     actions = _generate_corrective_actions(components, risks)
     
-    # 5️⃣ COSTRUISCI CONTESTO CONVERSAZIONALE
+    # COSTRUISCE CONTESTO CONVERSAZIONALE
     context = _build_conversation_context(conversation_history)
     
-    # 6️⃣ PROMPT PER LLM CONVERSAZIONALE
+    # PROMPT PER LLM CONVERSAZIONALE
     prompt = f"""Sei un analista di rischio finanziario senior di FinSecure Analytics.
 Il tuo compito è spiegare i risultati dell'analisi in modo chiaro, professionale e prudente.
 
-=== CONTESTO CONVERSAZIONE ===
+CONTESTO CONVERSAZIONE
 {context}
 
 === DOMANDA CORRENTE ===
 {question}
 
-=== RISULTATI ANALISI TECNICA ===
+RISULTATI ANALISI TECNICA
 {analysis}
 
-=== RISCHI IDENTIFICATI ===
+RISCHI IDENTIFICATI
 {_format_risks(risks)}
 
-=== AMBIGUITÀ E POSSIBILI INTERPRETAZIONI ERRATE ===
+AMBIGUITÀ E POSSIBILI INTERPRETAZIONI ERRATE
 {_format_ambiguities(ambiguities)}
 
-=== AZIONI CORRETTIVE SUGGERITE ===
+AZIONI CORRETTIVE SUGGERITE
 {_format_actions(actions)}
 
-=== ISTRUZIONI PER LA RISPOSTA ===
+ISTRUZIONI PER LA RISPOSTA
 Costruisci una risposta che:
 
 1. INIZIA con un riassunto chiaro (2-3 frasi) della situazione
 2. SPIEGA i dati principali in linguaggio naturale (evita elenchi puntati)
 3. EVIDENZIA esplicitamente:
-   - ⚠️ Eventuali omissioni nei dati
-   - 🔴 Rischi critici (se presenti)
-   - ⚡ Ambiguità che potrebbero portare a interpretazioni errate
+   - Eventuali omissioni nei dati
+   - Rischi critici (se presenti)
+   - Ambiguità che potrebbero portare a interpretazioni errate
 4. SUGGERISCI azioni concrete (se appropriate)
 5. TERMINA con una domanda di follow-up SOLO se:
    - I dati sono insufficienti per una risposta definitiva
@@ -86,12 +85,12 @@ IMPORTANTE:
 - Non fare supposizioni non supportate dai dati
 - Distingui tra FATTI certi e INTERPRETAZIONI possibili
 
-Risposta:"""
+Risposta in italiano:"""
     
-    # 7️⃣ GENERA RISPOSTA CONVERSAZIONALE
+    # GENERA RISPOSTA CONVERSAZIONALE
     response = Settings.llm.complete(prompt)
     
-    # 8️⃣ POST-PROCESSING: Aggiungi box di alert se necessario
+    # POST-PROCESSING: Aggiunge box di alert se necessario
     final_response = _add_visual_alerts(response.text, risks, ambiguities)
     
     return final_response
@@ -109,14 +108,14 @@ def _parse_analysis_components(analysis: str) -> dict:
         'decision_reason': ''
     }
     
-    # Estrai risultato del tool
+    # Estrae risultato del tool
     if '[Analisi Tool]' in analysis:
         parts = analysis.split('[Analisi Tool]')
         if len(parts) > 1:
             tool_part = parts[1].split('[Decision')[0].strip()
             components['tool_result'] = tool_part
     
-    # Estrai tool utilizzato e motivazione
+    # Estrae tool utilizzato e motivazione
     if '[Decision Logging]' in analysis:
         decision_section = analysis.split('[Decision Logging]')[1]
         
@@ -138,15 +137,15 @@ def _identify_risks(components: dict) -> list:
     
     # Pattern di rischio critico
     critical_patterns = [
-        (r'🔴|CRITICO|ALERT CRITICO', 'CRITICO'),
-        (r'🚨|Situazione critica|GRAVE', 'ALTO'),
-        (r'⚠️|alert|significativo', 'MEDIO'),
+        (r'CRITICO|ALERT CRITICO', 'CRITICO'),
+        (r'Situazione critica|GRAVE', 'ALTO'),
+        (r'alert|significativo', 'MEDIO'),
     ]
     
     for pattern, level in critical_patterns:
         matches = re.finditer(pattern, tool_result, re.IGNORECASE)
         for match in matches:
-            # Estrai contesto (50 caratteri prima e dopo)
+            # Estrae contesto (50 caratteri prima e dopo)
             start = max(0, match.start() - 50)
             end = min(len(tool_result), match.end() + 100)
             context = tool_result[start:end].strip()
@@ -158,7 +157,6 @@ def _identify_risks(components: dict) -> list:
             })
     
     return risks
-
 
 def _identify_ambiguities(components: dict) -> list:
     """Identifica ambiguità che potrebbero portare a interpretazioni errate"""
@@ -203,7 +201,6 @@ def _identify_ambiguities(components: dict) -> list:
         })
     
     return ambiguities
-
 
 def _assess_interpretation_risk(text: str) -> str:
     """Valuta il rischio di interpretazione errata"""
@@ -275,13 +272,12 @@ def _generate_corrective_actions(components: dict, risks: list) -> list:
     
     return actions
 
-
 def _build_conversation_context(history: list) -> str:
     """Costruisce il contesto conversazionale"""
     if not history:
         return "Questa è la prima domanda della conversazione."
     
-    # Prendi ultimi 3 scambi
+    # Prende ultimi 3 scambi
     recent_history = history[-3:] if len(history) > 3 else history
     
     context_lines = []
@@ -304,7 +300,6 @@ def _format_risks(risks: list) -> str:
     
     return '\n'.join(formatted)
 
-
 def _format_ambiguities(ambiguities: list) -> str:
     """Formatta le ambiguità per il prompt"""
     if not ambiguities:
@@ -318,7 +313,6 @@ def _format_ambiguities(ambiguities: list) -> str:
         )
     
     return '\n'.join(formatted)
-
 
 def _format_actions(actions: list) -> str:
     """Formatta le azioni correttive per il prompt"""
@@ -334,7 +328,6 @@ def _format_actions(actions: list) -> str:
     
     return '\n\n'.join(formatted)
 
-
 def _add_visual_alerts(response: str, risks: list, ambiguities: list) -> str:
     """Aggiunge box di alert visivi alla risposta"""
     alerts = []
@@ -343,7 +336,7 @@ def _add_visual_alerts(response: str, risks: list, ambiguities: list) -> str:
     critical_risks = [r for r in risks if r['level'] == 'CRITICO']
     if critical_risks:
         alerts.append(
-            "\n\n⚠️ **ALERT CRITICO**\n"
+            "\n\n**ALERT CRITICO**\n"
             "Sono stati identificati rischi che richiedono attenzione immediata. "
             "Consulta la sezione azioni correttive sopra."
         )
@@ -352,7 +345,7 @@ def _add_visual_alerts(response: str, risks: list, ambiguities: list) -> str:
     high_risk_ambiguities = [a for a in ambiguities if a['interpretation_risk'] == 'ALTO']
     if high_risk_ambiguities:
         alerts.append(
-            "\n\n🔍 **ATTENZIONE: DATI AMBIGUI**\n"
+            "\n\n**ATTENZIONE: DATI AMBIGUI**\n"
             "Alcuni dati presentano ambiguità che potrebbero portare a interpretazioni errate. "
             "Verificare le fonti prima di prendere decisioni strategiche."
         )
@@ -364,7 +357,7 @@ def _add_visual_alerts(response: str, risks: list, ambiguities: list) -> str:
 
 
 # ============================================================================
-# FUNZIONE PER GRADIO (wrapper semplificato)
+# FUNZIONE PER GRADIO
 # ============================================================================
 
 def chat(message, history):
@@ -404,11 +397,7 @@ def chat(message, history):
             f"Ti consiglio di riformulare la domanda o di provare con una query più specifica."
         )
         return error_msg
-
-
-# ============================================================================
-# ESEMPIO DI UTILIZZO
-# ============================================================================
+        
 
 if __name__ == "__main__":
     # Test della funzione
