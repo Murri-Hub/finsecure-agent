@@ -1,4 +1,4 @@
-# utils/colors.py
+# color.py
 B = '\033[1m'   # Bold
 G = '\033[92m'  # Green
 R = '\033[91m'  # Red
