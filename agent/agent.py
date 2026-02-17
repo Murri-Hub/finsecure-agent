@@ -9,6 +9,7 @@ from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
 from tools.tools import find_omissions, compare_periods, audit_compliance, predict_risk_trend
+from utils.color import B, X        # ANSI per print in grassetto
 from transformers import BitsAndBytesConfig
 import os
 import re
@@ -214,13 +215,13 @@ def generate_full_audit(questions):
     # GENERA DASHBOARD SE CI SONO METRICHE
     dashboard_path = None
     if q1_metrics and q2_metrics:
-        print("Generazione dashboard...")
+        print("\nGenerazione dashboard...")
         dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
-        print(f"Dashboard generata: {dashboard_path}")
+        print(f"Dashboard generata: {B}{dashboard_path}{X}")
     
     # Genera PDF (passa dashboard_path)
     pdf_path = generate_audit_report(analysis_results=results, dashboard_path=dashboard_path)
-    print(f"Report PDF generato: {pdf_path}")
+    print(f"Report PDF generato: {B}{pdf_path}{X}")
     
     return {
         'pdf': pdf_path,
@@ -238,4 +239,5 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
