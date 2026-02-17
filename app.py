@@ -43,6 +43,7 @@ def launch_interface():
     print(f"{B}Interfaccia creata!{X}")
     
     print("\nLancio interfaccia...")
+    print(f"{B}Cliccare su public URL{X}\n")
     demo.queue().launch(
         share=True,
         inline=False,
