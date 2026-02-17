@@ -4,7 +4,7 @@ Entry point per FinSecure AI Audit Agent
 """
 import sys
 import os
-from utils.colors import B, X        # Per print in grassetto
+from utils.color import B, X        # Per print in grassetto
 
 # Soppressione warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
