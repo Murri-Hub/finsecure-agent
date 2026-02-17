@@ -1,5 +1,5 @@
 """
-conversational_agent_improved.py
+chat.py
 Funzione conversazionale per l'agente AI
 """
 from llama_index.core import Settings
