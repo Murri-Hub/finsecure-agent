@@ -44,7 +44,7 @@ def conversational_agent_answer(question: str, conversation_history: list = None
     
     # PROMPT PER LLM CONVERSAZIONALE
     prompt = f"""Sei un analista di rischio finanziario senior di FinSecure Analytics.
-Il tuo compito è spiegare i risultati dell'analisi in modo chiaro, professionale e prudente.
+Il tuo compito è spiegare in LINGUA ITALIANA i risultati dell'analisi in modo chiaro, professionale e prudente.
 
 CONTESTO CONVERSAZIONE
 {context}
