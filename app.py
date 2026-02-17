@@ -4,6 +4,7 @@ Entry point per FinSecure AI Audit Agent
 """
 import sys
 import os
+from utils.colors import B, X        # Per print in grassetto
 
 # Soppressione warning
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -17,33 +18,31 @@ sys.path.append(BASE_DIR)
 from ingestion.parse_docs import parse_and_index
 from ui.gradio_interface import create_interface
 
-
 def initialize():
     """Inizializza il sistema (indicizzazione documenti)"""
     
-    print("=" * 60)
+    print("\n" + "=" * 60)
     print("🚀 FinSecure AI Audit Agent - Inizializzazione")
     print("=" * 60)
     
-    print("\n📚 Indicizzazione documenti in corso...")
+    print("\nIndicizzazione documenti in corso...")
     try:
         parse_and_index()
-        print("✅ Documenti indicizzati con successo!")
+        print(f"{B}Documenti indicizzati con successo!{X}")
     except Exception as e:
-        print(f"⚠️ Errore durante l'indicizzazione: {e}")
+        print(f"Errore durante l'indicizzazione: {e}")
         print("Continuando comunque...")
     
-    print("\n✅ Sistema inizializzato!")
-
-
+    print(f"{B}\nSistema inizializzato!{X}")
+    
 def launch_interface():
     """Crea e lancia l'interfaccia Gradio"""
     
-    print("\n🎨 Creazione interfaccia Gradio...")
+    print("\nCreazione interfaccia Gradio...")
     demo = create_interface()
-    print("✅ Interfaccia creata!")
+    print(f"{B}Interfaccia creata!{X}")
     
-    print("\n🚀 Lancio interfaccia...")
+    print("\nLancio interfaccia...")
     demo.queue().launch(
         share=True,
         inline=False,
@@ -55,7 +54,6 @@ def main():
     """Workflow completo: inizializza + lancia interfaccia"""
     initialize()
     launch_interface()
-
 
 if __name__ == "__main__":
     main()
