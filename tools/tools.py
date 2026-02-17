@@ -15,19 +15,19 @@ def find_omissions(text_chunks):
         # Cerca parole chiave di vaghezza
         for signal in signals:
             if signal in chunk.lower():
-                findings.append(f"⚠️ Vaghezza rilevata: '{signal}' → {chunk[:150]}...")
+                findings.append(f"Vaghezza rilevata: '{signal}' → {chunk[:150]}...")
         
         # Cerca campi con valori mancanti (es. "Campo: " senza valore dopo)
         missing_values = re.findall(r'[-•]\s*([^:]+):\s*$', chunk, re.MULTILINE)
         for field in missing_values:
-            findings.append(f"❌ VALORE MANCANTE: '{field.strip()}' non ha un valore specificato")
+            findings.append(f"VALORE MANCANTE: '{field.strip()}' non ha un valore specificato")
         
         # Cerca percentuali o numeri senza contesto
         if re.search(r'\d+%?\s*$', chunk):
-            findings.append(f"⚠️ Dato numerico senza contesto: {chunk[:100]}...")
+            findings.append(f"Dato numerico senza contesto: {chunk[:100]}...")
     
     if not findings:
-        return "✅ Nessuna omissione evidente rilevata."
+        return "Nessuna omissione evidente rilevata."
     
     return "\n".join(findings)
 
@@ -74,49 +74,49 @@ def compare_periods(chunks_q1, chunks_q2):
     if 'ricavi' in q1_nums and 'ricavi' in q2_nums:
         diff = ((q2_nums['ricavi'] - q1_nums['ricavi']) / q1_nums['ricavi']) * 100
         if diff > 0:
-            summary.append(f"📈 Ricavi aumentati del {diff:.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
+            summary.append(f"Ricavi aumentati del {diff:.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
         elif diff < 0:
-            summary.append(f"📉 Ricavi diminuiti del {abs(diff):.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
+            summary.append(f"Ricavi diminuiti del {abs(diff):.1f}% (Q1: {q1_nums['ricavi']}M → Q2: {q2_nums['ricavi']}M)")
         else:
-            summary.append(f"➡️ Ricavi stabili a {q1_nums['ricavi']}M")
+            summary.append(f"Ricavi stabili a {q1_nums['ricavi']}M")
     
     # Confronta margine
     if 'margine' in q1_nums and 'margine' in q2_nums:
         diff = q2_nums['margine'] - q1_nums['margine']
         if diff < -2:
-            summary.append(f"🔴 Margine operativo calato significativamente di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+            summary.append(f"Margine operativo calato significativamente di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
         elif diff < 0:
-            summary.append(f"⚠️ Margine operativo calato di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+            summary.append(f"Margine operativo calato di {abs(diff):.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
         elif diff > 2:
-            summary.append(f"✅ Margine operativo migliorato significativamente di {diff:.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
+            summary.append(f"Margine operativo migliorato significativamente di {diff:.1f} punti percentuali ({q1_nums['margine']}% → {q2_nums['margine']}%)")
     
     # Confronta rischio
     if 'rischio' in q1_nums and 'rischio' in q2_nums:
         diff = ((q2_nums['rischio'] - q1_nums['rischio']) / q1_nums['rischio']) * 100
         if diff > 20:
-            summary.append(f"🔴 Esposizione al rischio aumentata in modo critico del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
+            summary.append(f"Esposizione al rischio aumentata in modo critico del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
         elif diff > 10:
-            summary.append(f"⚠️ Esposizione al rischio aumentata significativamente del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
+            summary.append(f"Esposizione al rischio aumentata significativamente del {diff:.1f}% (Q1: {q1_nums['rischio']}M → Q2: {q2_nums['rischio']}M)")
         elif diff > 0:
-            summary.append(f"📊 Esposizione al rischio aumentata del {diff:.1f}%")
+            summary.append(f"Esposizione al rischio aumentata del {diff:.1f}%")
     
     # Alert combinato critico
     if q2_nums.get('margine', 0) < q1_nums.get('margine', 0) and q2_nums.get('rischio', 0) > q1_nums.get('rischio', 0):
-        summary.append("⚠️ ALERT: Combinazione critica di margine in calo e rischio in aumento")
+        summary.append("ALERT: Combinazione critica di margine in calo e rischio in aumento")
     
     # Analisi qualitativa
     if len(chunks_q2) > len(chunks_q1) * 1.2:
-        summary.append("📄 Q2 mostra documentazione più complessa (+20% dettagli)")
+        summary.append("Q2 mostra documentazione più complessa (+20% dettagli)")
     
     negative_keywords = ["riduzione", "calo", "diminuzione", "criticità", "volatile", "incerto"]
     q2_neg = sum(1 for c in chunks_q2 for kw in negative_keywords if kw in c.lower())
     q1_neg = sum(1 for c in chunks_q1 for kw in negative_keywords if kw in c.lower())
     
     if q2_neg > q1_neg + 2:
-        summary.append(f"⚠️ Sentiment più negativo in Q2 ({q2_neg} vs {q1_neg} segnali di rischio)")
+        summary.append(f"Sentiment più negativo in Q2 ({q2_neg} vs {q1_neg} segnali di rischio)")
     
     if not summary:
-        return "➡️ Nessuna differenza significativa rilevata tra i periodi."
+        return "Nessuna differenza significativa rilevata tra i periodi."
     
     return "\n".join(summary)
 
@@ -131,7 +131,7 @@ def audit_compliance(text_chunks):
     for chunk in text_chunks:
         for flag in compliance_flags:
             if flag in chunk.lower():
-                issues.append(f"🚨 Possibile problema: '{flag}' → {chunk[:150]}...")
+                issues.append(f"Possibile problema: '{flag}' → {chunk[:150]}...")
     
     # Verifica completezza con pattern più flessibili
     all_text = " ".join(text_chunks).lower()
@@ -148,14 +148,14 @@ def audit_compliance(text_chunks):
             missing_sections.append(section)
     
     if missing_sections:
-        issues.append(f"⚠️ Sezioni potenzialmente mancanti: {', '.join(missing_sections)}")
+        issues.append(f"Sezioni potenzialmente mancanti: {', '.join(missing_sections)}")
     
     # Verifica presenza disclaimer legali
     if "disclaimer" not in all_text and "limitazione" not in all_text:
-        issues.append("⚠️ Disclaimer legale potenzialmente assente")
+        issues.append("Disclaimer legale potenzialmente assente")
     
     if not issues:
-        return "✅ Nessun problema di compliance evidente."
+        return "Nessun problema di compliance evidente."
     
     return "\n".join(issues)
 
@@ -173,7 +173,7 @@ def predict_risk_trend(historical_data):
     
     # Validazione input
     if 'q1_risk' not in historical_data or 'q2_risk' not in historical_data:
-        return "⚠️ Impossibile predire: dati Q1 o Q2 mancanti"
+        return "Impossibile predire: dati Q1 o Q2 mancanti"
     
     q1_risk = historical_data['q1_risk']
     q2_risk = historical_data['q2_risk']
@@ -193,7 +193,7 @@ def predict_risk_trend(historical_data):
     
     # Costruisci messaggio
     results = [
-        f"\n📊 PREDIZIONE RISCHIO Q3 2024",
+        f"\nPREDIZIONE RISCHIO Q3 2024",
         f"{'='*50}",
         f"",
         f"Storico:",
@@ -206,20 +206,20 @@ def predict_risk_trend(historical_data):
     # Alert se trend critico
     if q3_prediction > q2_risk * 1.3:
         results.append("")
-        results.append("🚨 ALERT CRITICO: Rischio previsto in aumento oltre il 30%!")
+        results.append("ALERT CRITICO: Rischio previsto in aumento oltre il 30%!")
         results.append("   Raccomandazioni:")
         results.append("   - Ridurre esposizione su clienti ad alto rischio")
         results.append("   - Aumentare riserve di liquidità")
         results.append("   - Rivedere politiche di credito")
     elif q3_prediction > q2_risk * 1.15:
         results.append("")
-        results.append("⚠️ ALERT: Rischio in aumento moderato (+15-30%)")
+        results.append("ALERT: Rischio in aumento moderato (+15-30%)")
         results.append("   Monitorare attentamente l'evoluzione")
     elif q3_prediction < q2_risk * 0.9:
         results.append("")
-        results.append("✅ Trend positivo: Rischio in diminuzione")
+        results.append("Trend positivo: Rischio in diminuzione")
     else:
         results.append("")
-        results.append("➡️ Trend stabile: Variazione contenuta")
+        results.append("Trend stabile: Variazione contenuta")
     
     return "\n".join(results)
