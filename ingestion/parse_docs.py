@@ -1,17 +1,17 @@
 """
 parse_docs.py
-Parsing e indicizzazione documenti finanziari (versione Colab)
+Parsing e indicizzazione documenti finanziari
 """
 import os
 from llama_index.core import VectorStoreIndex, Document, SimpleDirectoryReader, Settings
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-# --- CONFIGURAZIONE EMBEDDINGS LOCALI ---
+# CONFIGURAZIONE EMBEDDINGS LOCALI
 Settings.embed_model = HuggingFaceEmbedding(
     model_name="BAAI/bge-small-en-v1.5"
 )
 
-# --- PATH ---
+# PATH
 BASE_DIR = "/content/finsecure-agent"
 RAW_DATA_DIR = os.path.join(BASE_DIR, "data/raw")
 PROCESSED_DIR = os.path.join(BASE_DIR, "data/processed")
@@ -52,7 +52,7 @@ def parse_and_index():
     
     print(f"[INFO] Chunk creati: {len(documents)}")
     
-    # --- CREAZIONE INDICE ---
+    # CREAZIONE INDICE
     index = VectorStoreIndex.from_documents(documents)
     index.storage_context.persist(persist_dir=INDEX_SAVE_PATH)
     print(f"[INFO] Indice salvato in {INDEX_SAVE_PATH}")
