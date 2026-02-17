@@ -15,19 +15,19 @@ def chat(message, history):
     Gestisce sia domande analitiche (con tool) che conversazionali
     """
     try:
-        # 1️⃣ ESTRAI CONTESTO DALLA CONVERSAZIONE
+        # ESTRAE CONTESTO DALLA CONVERSAZIONE
         conversation_summary = _extract_conversation_context(history)
 
-        # 2️⃣ DETERMINA SE È UNA DOMANDA DI FOLLOW-UP
+        # DETERMINA SE È UNA DOMANDA DI FOLLOW-UP
         is_followup = _is_followup_question(message, history)
 
-        # 3️⃣ ESEGUI ANALISI CON I TOOL
+        # ESEGUE ANALISI CON I TOOL
         tool_analysis = agent_answer(message)
 
-        # 4️⃣ PULISCI IL RISULTATO DEL TOOL
+        # PULISCE IL RISULTATO DEL TOOL
         tool_result, tool_used = _extract_tool_result(tool_analysis)
 
-        # 5️⃣ GENERA RISPOSTA CONVERSAZIONALE
+        # GENERA RISPOSTA CONVERSAZIONALE
         if is_followup and conversation_summary:
             response = _generate_followup_response(
                 message, conversation_summary, tool_result, tool_used
@@ -42,7 +42,7 @@ def chat(message, history):
         return response
 
     except Exception as e:
-        return f"⚠️ Errore nell'elaborazione: {str(e)}\n\nRiformula la domanda."
+        return f"Errore nell'elaborazione: {str(e)}\n\nRiformula la domanda."
 
 
 def _extract_conversation_context(history):
@@ -140,9 +140,9 @@ def _generate_analytical_response(message, tool_result, tool_used):
     """Genera risposta analitica con LLM"""
     
     risk_level = "normale"
-    if "🔴" in tool_result or "CRITICO" in tool_result.upper():
+    if "CRITICO" in tool_result.upper():
         risk_level = "critico"
-    elif "⚠️" in tool_result or "SIGNIFICATIVO" in tool_result.upper():
+    elif "SIGNIFICATIVO" in tool_result.upper():
         risk_level = "elevato"
 
     prompt = f"""Sei un analista finanziario senior di FinSecure Analytics.
@@ -174,11 +174,11 @@ Risposta in italiano:"""
     except Exception as e:
         # Fallback
         header = {
-            'find_omissions': '📋 Analisi Omissioni',
-            'compare_periods': '📊 Confronto Q1 vs Q2',
-            'audit_compliance': '⚖️ Audit Compliance',
-            'predict_risk_trend': '🔮 Predizione Trend'
-        }.get(tool_used, '📈 Analisi')
+            'find_omissions': 'Analisi Omissioni',
+            'compare_periods': 'Confronto Q1 vs Q2',
+            'audit_compliance': 'Audit Compliance',
+            'predict_risk_trend': 'Predizione Trend'
+        }.get(tool_used, 'Analisi')
         
         return f"**{header}**\n\n{tool_result}"
 
@@ -209,18 +209,18 @@ Risposta in italiano:"""
         response = Settings.llm.complete(prompt)
         return response.text.strip()
     except Exception as e:
-        return """🤖 **FinSecure AI Audit Agent**
+        return """**FinSecure AI Audit Agent**
 
 Analisi report finanziari Q1-Q2 2024.
 
 **Capacità:**
-📋 Omissioni, 📊 Confronti, ⚖️ Compliance, 🔮 Predizioni
+Omissioni, Confronti, Compliance, Predizioni
 
 **Esempi:**
 • "Come si confrontano Q1 e Q2?"
 • "Ci sono omissioni nel report Q2?"
 
-Fai una domanda specifica! 💼"""
+Fai una domanda specifica!"""
 
 
 def audit_completo(progress=gr.Progress()):
@@ -243,9 +243,9 @@ def audit_completo(progress=gr.Progress()):
                 risposta = agent_answer(domanda)
                 if '[Analisi Tool]' in risposta:
                     risposta = risposta.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
-                risultati_testo.append(f"### ❓ {domanda}\n\n{risposta}\n\n{'='*80}\n")
+                risultati_testo.append(f"###{domanda}\n\n{risposta}\n\n{'='*80}\n")
             except Exception as e:
-                risultati_testo.append(f"### ❓ {domanda}\n\n⚠️ Errore: {str(e)}\n\n{'='*80}\n")
+                risultati_testo.append(f"###{domanda}\n\nErrore: {str(e)}\n\n{'='*80}\n")
 
         progress(1.0, desc="Generazione report...")
 
@@ -265,7 +265,7 @@ def audit_completo(progress=gr.Progress()):
 
             return ("\n".join(risultati_testo), dashboard_tmp, pdf_tmp)
         except Exception as e:
-            return ("\n".join(risultati_testo) + f"\n\n⚠️ Errore: {str(e)}", None, None)
+            return ("\n".join(risultati_testo) + f"\n\nErrore: {str(e)}", None, None)
 
     except Exception as e:
         return f"Errore: {str(e)}", None, None
@@ -286,7 +286,7 @@ def create_interface():
         gr.Markdown("# FinSecure Analytics - AI Audit Agent")
 
         with gr.Tabs():
-            with gr.Tab("💬 Chat"):
+            with gr.Tab("Chat"):
                 gr.Markdown("### Fai domande sui report finanziari")
                 chatbot = gr.ChatInterface(
                     fn=chat,
@@ -294,9 +294,9 @@ def create_interface():
                     type="messages"
                 )
 
-            with gr.Tab("📊 Audit Completo"):
+            with gr.Tab("Audit Completo"):
                 gr.Markdown("### Genera report automatico")
-                audit_btn = gr.Button("🚀 Avvia Audit", variant="primary", size="lg")
+                audit_btn = gr.Button("Avvia Audit", variant="primary", size="lg")
 
                 with gr.Row():
                     with gr.Column(scale=2):
@@ -304,14 +304,14 @@ def create_interface():
                     with gr.Column(scale=1):
                         dashboard_output = gr.Image(label="Dashboard")
 
-                pdf_output = gr.File(label="📄 Report PDF")
+                pdf_output = gr.File(label="Report PDF")
 
                 audit_btn.click(
                     fn=audit_completo,
                     outputs=[risultati_output, dashboard_output, pdf_output]
                 )
             
-            with gr.Tab("ℹ️ Info"):
+            with gr.Tab("Info"):
                 gr.Markdown("""
                 ## FinSecure AI Audit Agent
                 
@@ -333,6 +333,10 @@ def create_interface():
                 - Report Finanziario Q1 2024
                 - Report Finanziario Q2 2024
                 - Note di Audit Interno
+
+                **Tempi di risposta**
+                - Circa 30-90 secondi a domanda in chat
+                - Almeno 1 minuto per l'audit
                 """)
 
     return demo
