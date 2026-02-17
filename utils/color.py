@@ -1,6 +1,6 @@
 # utils/colors.py
-BOLD  = '\033[1m'
-GREEN = '\033[92m'
-RED   = '\033[91m'
-YELLOW = '\033[93m'
-RESET = '\033[0m'
+B = '\033[1m'   # Bold
+G = '\033[92m'  # Green
+R = '\033[91m'  # Red
+Y = '\033[93m'  # Yellow
+X = '\033[0m'   # Reset
