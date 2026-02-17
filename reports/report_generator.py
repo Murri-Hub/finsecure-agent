@@ -30,7 +30,7 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
     pdf = FPDF()
     pdf.add_page()
 
-    # --- INTESTAZIONE ---
+    # INTESTAZIONE
     pdf.set_font("Arial", 'B', size=18)
     pdf.cell(0, 15, txt="FinSecure Analytics", ln=True, align='C')
 
@@ -52,7 +52,7 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
     pdf.ln(8)
 
-    # --- FUNZIONE HELPER PER SEZIONI ---
+    # FUNZIONE HELPER PER SEZIONI
     def add_section(title, content, icon=""):
         """Aggiunge una sezione formattata"""
         # Titolo sezione
@@ -64,7 +64,7 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
         # Contenuto
         pdf.set_font("Arial", size=10)
 
-        # Gestisci encoding per caratteri speciali
+        # Gestione encoding per caratteri speciali
         if content:
             # Sostituisci emoji con testo (FPDF non supporta emoji)
             content_cleaned = (content
@@ -79,7 +79,7 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
                                .replace('€', 'EUR')
                                )
 
-            # Rimuovi caratteri non ASCII rimanenti
+            # Rimuove caratteri non ASCII rimanenti
             content_cleaned = content_cleaned.encode('latin-1', 'ignore').decode('latin-1')
 
             pdf.multi_cell(0, 6, txt=content_cleaned)
@@ -90,25 +90,25 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
 
         pdf.ln(5)
 
-    # --- SEZIONE 1: ANALISI OMISSIONI ---
+    # SEZIONE 1: ANALISI OMISSIONI
     if 'omissions' in analysis_results:
         add_section("Analisi Omissioni e Completezza Dati",
                     analysis_results['omissions'],
                     icon="[1]")
 
-    # --- SEZIONE 2: CONFRONTO PERIODI ---
+    # SEZIONE 2: CONFRONTO PERIODI
     if 'comparison' in analysis_results:
         add_section("Confronto Periodi Q1 vs Q2",
                     analysis_results['comparison'],
                     icon="[2]")
 
-    # --- SEZIONE 3: COMPLIANCE ---
+    # SEZIONE 3: COMPLIANCE
     if 'compliance' in analysis_results:
         add_section("Audit di Compliance Normativa",
                     analysis_results['compliance'],
                     icon="[3]")
     
-    # --- SEZIONE 4: AGGIUNGI DASHBOARD SE DISPONIBILE ---
+    # SEZIONE 4: AGGIUNGI DASHBOARD SE DISPONIBILE
     if dashboard_path and os.path.exists(dashboard_path):
     
         pdf.add_page()  # Nuova pagina per la dashboard
@@ -140,14 +140,14 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
             pdf.multi_cell(0, 6, txt=f"[Errore nel caricamento dashboard: {str(e)}]")
         
     
-    # --- SEZIONE 5: SIMULAZIONE ---
+    # SEZIONE 5: SIMULAZIONE
     if 'simulation' in analysis_results and analysis_results['simulation']:
         section_num = "5" if dashboard_path else "4"  # Aggiusta numerazione
         add_section(f"{section_num}. Simulazione Scenari di Rischio",
                     analysis_results['simulation'],
                     icon=f"[{section_num}]")
 
-    # --- SEZIONE CONCLUSIONI ---
+    # SEZIONE CONCLUSIONI
     pdf.ln(5)
     pdf.set_draw_color(200, 200, 200)
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())
@@ -176,7 +176,7 @@ def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent
     for rec in recommendations:
         pdf.multi_cell(0, 6, txt=rec)
 
-    # --- FOOTER ---
+    # FOOTER
     pdf.ln(10)
     pdf.set_font("Arial", 'I', size=8)
     pdf.set_text_color(128, 128, 128)
