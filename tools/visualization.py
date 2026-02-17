@@ -29,14 +29,14 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     fig.suptitle('FinSecure Analytics - Dashboard Comparativa Q1 vs Q2 2024',
                  fontsize=16, fontweight='bold')
 
-    # --- GRAFICO 1: RICAVI ---
+    # GRAFICO 1: RICAVI
     if 'ricavi' in q1_data and 'ricavi' in q2_data:
         ricavi_vals = [q1_data['ricavi'], q2_data['ricavi']]
         bars = axes[0, 0].bar(['Q1', 'Q2'], ricavi_vals, color=['#3498db', '#2ecc71'])
         axes[0, 0].set_title('Ricavi (M€)', fontweight='bold')
         axes[0, 0].set_ylabel('Milioni €')
 
-        # Aggiungi valori sopra le barre
+        # Aggiunge valori sopra le barre
         for i, (bar, val) in enumerate(zip(bars, ricavi_vals)):
             axes[0, 0].text(bar.get_x() + bar.get_width() / 2, val + 0.2,
                             f'{val:.1f}M', ha='center', va='bottom', fontweight='bold')
@@ -50,7 +50,7 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
         axes[0, 0].text(0.5, 0.5, 'Dati ricavi non disponibili',
                         ha='center', va='center', transform=axes[0, 0].transAxes)
 
-    # --- GRAFICO 2: MARGINE OPERATIVO ---
+    # GRAFICO 2: MARGINE OPERATIVO
     if 'margine' in q1_data and 'margine' in q2_data:
         margine_vals = [q1_data['margine'], q2_data['margine']]
         axes[0, 1].plot(['Q1', 'Q2'], margine_vals, marker='o', linewidth=2,
@@ -77,7 +77,7 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
         axes[0, 1].text(0.5, 0.5, 'Dati margine non disponibili',
                         ha='center', va='center', transform=axes[0, 1].transAxes)
 
-    # --- GRAFICO 3: ESPOSIZIONE AL RISCHIO ---
+    # GRAFICO 3: ESPOSIZIONE AL RISCHIO
     if 'rischio' in q1_data and 'rischio' in q2_data:
         rischio_vals = [q1_data['rischio'], q2_data['rischio']]
         colors = ['#f39c12' if rischio_vals[0] < 3 else '#e74c3c',
@@ -103,7 +103,7 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
         axes[1, 0].text(0.5, 0.5, 'Dati rischio non disponibili',
                         ha='center', va='center', transform=axes[1, 0].transAxes)
 
-    # --- GRAFICO 4: RIEPILOGO KPI ---
+    # GRAFICO 4: RIEPILOGO KPI
     # Crea un heatmap con tutti i KPI
     metrics_names = []
     q1_values = []
@@ -155,7 +155,7 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     output_path = os.path.join(output_dir, 'dashboard_comparativa.png')
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
 
-    # Chiudi figura per liberare memoria
+    # Chiusura figura per liberare memoria
     plt.close(fig)
 
     return output_path
