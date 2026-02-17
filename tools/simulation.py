@@ -42,7 +42,7 @@ def simulate_risk_scenario(chunks, scenario_type="crisis"):
 
         return metrics
 
-    # --- DEFINISCI SCENARI ---
+    # DEFINIZIONE SCENARI
     scenarios = {
         "crisis": {
             "ricavi": -0.20,  # -20%
@@ -64,15 +64,15 @@ def simulate_risk_scenario(chunks, scenario_type="crisis"):
     }
 
     if scenario_type not in scenarios:
-        return f"❌ Scenario '{scenario_type}' non riconosciuto. Usa: crisis, growth, interest_hike"
+        return f"Scenario '{scenario_type}' non riconosciuto. Usa: crisis, growth, interest_hike"
 
-    # --- ESTRAI METRICHE CORRENTI ---
+    # ESTRAE METRICHE CORRENTI
     current_metrics = extract_metrics(chunks)
 
     if not current_metrics:
-        return "⚠️ Impossibile estrarre metriche dai documenti forniti"
+        return "Impossibile estrarre metriche dai documenti forniti"
 
-    # --- APPLICA SCENARIO ---
+    # APPLICA SCENARIO
     scenario_changes = scenarios[scenario_type]
     projected_metrics = {}
 
@@ -88,15 +88,15 @@ def simulate_risk_scenario(chunks, scenario_type="crisis"):
         else:
             projected_metrics[metric] = current_value
 
-    # --- FORMATTA RISULTATI ---
+    # FORMATTA RISULTATI
     scenario_names = {
-        "crisis": "🔴 Scenario di Crisi",
-        "growth": "📈 Scenario di Crescita",
-        "interest_hike": "📊 Scenario Rialzo Tassi"
+        "crisis": "Scenario di Crisi",
+        "growth": "Scenario di Crescita",
+        "interest_hike": "Scenario Rialzo Tassi"
     }
 
     results = [f"\n{scenario_names.get(scenario_type, scenario_type)}\n{'=' * 50}"]
-    results.append("\n📋 METRICHE ATTUALI vs PROIETTATE:\n")
+    results.append("\nMETRICHE ATTUALI vs PROIETTATE:\n")
 
     for metric in current_metrics.keys():
         current = current_metrics[metric]
@@ -115,16 +115,17 @@ def simulate_risk_scenario(chunks, scenario_type="crisis"):
                 f"({diff:+.1f}M, {diff_pct:+.1f}%)"
             )
 
-    # --- ALERT SE CRITICO ---
-    results.append("\n⚠️ ALERT:")
+    # ALERT SE CRITICO
+    results.append("\nALERT:")
 
     if projected_metrics.get('rischio', 0) > current_metrics.get('rischio', 0) * 1.3:
-        results.append("🚨 Rischio aumenta oltre il 30% - Situazione critica!")
+        results.append("Rischio aumenta oltre il 30% - Situazione critica!")
 
     if projected_metrics.get('margine', 100) < 20:
-        results.append("🚨 Margine scende sotto il 20% - Soglia critica!")
+        results.append("Margine scende sotto il 20% - Soglia critica!")
 
     if projected_metrics.get('liquidità', 100) < 2:
-        results.append("🚨 Liquidità critica sotto i 2M€ - Rischio default!")
+        results.append("Liquidità critica sotto i 2M€ - Rischio default!")
+
 
     return "\n".join(results)
