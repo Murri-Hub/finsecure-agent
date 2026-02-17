@@ -1,4 +1,5 @@
 """
+visualization.py
 Dashboard e visualizzazioni
 """
 def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
@@ -159,3 +160,4 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     plt.close(fig)
 
     return output_path
+
