@@ -1,4 +1,4 @@
-# config/models.py
+# models.py
 from llama_index.core import Settings
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
@@ -6,7 +6,7 @@ from transformers import BitsAndBytesConfig
 import torch
 
 def setup_models():
-    """Configura embed_model e LLM una sola volta"""
+    """Configura embed_model e LLM"""
     
     # Embeddings
     Settings.embed_model = HuggingFaceEmbedding(
