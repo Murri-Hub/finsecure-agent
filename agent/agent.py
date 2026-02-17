@@ -17,12 +17,12 @@ import torch
 from config.models import setup_models
 setup_models()
 
-# --- PATH ---
+# PATH
 BASE_DIR = "/content/finsecure-agent"
 RAW_DATA_DIR = os.path.join(BASE_DIR, "data/raw")
 INDEX_PATH = os.path.join(BASE_DIR, "data/processed/")
 
-# --- LOAD / CREATE INDEX ---
+# LOAD / CREATE INDEX
 def load_index():
     if os.path.exists(os.path.join(INDEX_PATH, "docstore.json")):
         storage_context = StorageContext.from_defaults(persist_dir=INDEX_PATH)
@@ -34,7 +34,7 @@ def load_index():
         index.storage_context.persist(persist_dir=INDEX_PATH)
     return index
 
-# --- RETRIEVE CHUNKS ---
+# RETRIEVE CHUNKS
 def retrieve_chunks(query, top_k=5):
     index = load_index()
     query_engine = index.as_query_engine(
@@ -45,7 +45,7 @@ def retrieve_chunks(query, top_k=5):
     chunks = [node.node.text for node in response.source_nodes]
     return chunks, str(response)
 
-# --- RETRIEVE CHUNKS BY METADATA ---
+# RETRIEVE CHUNKS BY METADATA
 def retrieve_chunks_by_metadata(period, top_k=10):
     """
     Recupera chunk filtrati per periodo usando i metadata
@@ -67,7 +67,7 @@ def retrieve_chunks_by_metadata(period, top_k=10):
     
     return chunks
 
-# --- AGENT ---
+# AGENT
 def agent_answer(question: str):
     decision_log: dict[str, str] = {
         "tool_used": "none",
@@ -77,7 +77,7 @@ def agent_answer(question: str):
     chunks, base_answer = retrieve_chunks(question)
     question_lower = question.lower()
     
-    # --- TOOL: Omissioni ---
+    # TOOL: Omissioni
     if "omission" in question_lower or "mancanza" in question_lower:
         decision_log["tool_used"] = "find_omissions"
         decision_log["decision_reason"] = (
@@ -86,7 +86,7 @@ def agent_answer(question: str):
         )
         tool_result = find_omissions(chunks)
     
-    # --- TOOL: Confronto periodi ---
+    # TOOL: Confronto periodi
     elif ("confront" in question_lower) or ("q1" in question_lower and "q2" in question_lower):
         decision_log["tool_used"] = "compare_periods"
         decision_log["decision_reason"] = (
@@ -98,7 +98,7 @@ def agent_answer(question: str):
         chunks_q2 = retrieve_chunks_by_metadata("Q2 2024", top_k=15)
         tool_result = compare_periods(chunks_q1, chunks_q2)
     
-    # --- TOOL: Compliance ---
+    # TOOL: Compliance
     elif "compliance" in question_lower or "conforme" in question_lower:
         decision_log["tool_used"] = "audit_compliance"
         decision_log["decision_reason"] = (
@@ -107,7 +107,7 @@ def agent_answer(question: str):
         )
         tool_result = audit_compliance(chunks)
 
-    # --- TOOL: Predizione Trend ---
+    # TOOL: Predizione Trend
     elif "predizione" in question_lower or "previsione" in question_lower or "trend" in question_lower:
         decision_log["tool_used"] = "predict_risk_trend"
         decision_log["decision_reason"] = (
@@ -115,11 +115,11 @@ def agent_answer(question: str):
             "basata sui dati storici disponibili."
         )
     
-        # Estrai metriche Q1 e Q2
+        # Estrae metriche Q1 e Q2
         chunks_q1 = retrieve_chunks_by_metadata("Q1 2024", top_k=15)
         chunks_q2 = retrieve_chunks_by_metadata("Q2 2024", top_k=15)
         
-        # Estrai rischio da entrambi i periodi
+        # Estrae rischio da entrambi i periodi
         def extract_risk(chunks):
             for chunk in chunks:
                 match = re.search(r'rischio.*?(\d+[,.]?\d*)\s*milioni', chunk.lower())
@@ -173,7 +173,7 @@ def generate_full_audit(questions):
     q1_metrics = {}
     q2_metrics = {}
     
-    # Esegui tutte le analisi
+    # Esegue tutte le analisi
     for q in questions:
         answer = agent_answer(q)
         
@@ -184,7 +184,7 @@ def generate_full_audit(questions):
             comparison_text = answer.split('[Analisi Tool]')[1].split('[Decision')[0].strip()
             results['comparison'] = comparison_text
             
-            # ESTRAI METRICHE PER IL DASHBOARD
+            # ESTRAE METRICHE PER IL DASHBOARD
             # Cerca pattern tipo "Q1: 11.8M → Q2: 12.4M"
             ricavi_match = re.search(r'Q1:\s*(\d+\.?\d*)M.*?Q2:\s*(\d+\.?\d*)M', comparison_text)
             if ricavi_match:
@@ -228,8 +228,7 @@ def generate_full_audit(questions):
     }
     
 
-
-# --- MAIN ---
+# MAIN
 if __name__ == "__main__":
     print("FinSecure Agent – Modalità Agentic\n")
     while True:
@@ -239,15 +238,3 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
-
-
-
-
-
-
-
-
-
-
-
-
