@@ -107,7 +107,7 @@ def _extract_tool_result(analysis):
 def _generate_followup_response(message, context, tool_result, tool_used):
     """Genera risposta follow-up con LLM"""
     
-    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics.
+    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics che risponde in LINGUA ITALIANA.
 
 CONVERSAZIONE PRECEDENTE:
 Domanda: {context['user_question']}
@@ -120,7 +120,7 @@ DATI DISPONIBILI:
 {tool_result if tool_result and tool_result != "None" else "Nessun nuovo dato"}
 
 COMPITO:
-Rispondi in modo professionale ma accessibile:
+Rispondi in LINGUA ITALIANA in modo professionale ma accessibile:
 - Fornisci informazioni aggiuntive contestuali
 - Interpreta i dati in termini pratici
 - Suggerisci azioni concrete se appropriato
@@ -145,7 +145,7 @@ def _generate_analytical_response(message, tool_result, tool_used):
     elif "SIGNIFICATIVO" in tool_result.upper():
         risk_level = "elevato"
 
-    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics.
+    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics che risponde in LINGUA ITALIANA.
 
 DOMANDA:
 {message}
@@ -156,7 +156,7 @@ RISULTATI ANALISI:
 LIVELLO RISCHIO: {risk_level}
 
 COMPITO:
-Spiega i risultati in modo professionale:
+Spiega i risultati in LINGUA ITALIANA in modo professionale:
 1. Sintesi esecutiva (2-3 frasi)
 2. Spiegazione dati in linguaggio naturale
 3. Evidenzia rischi se presenti
@@ -190,13 +190,13 @@ def _generate_generic_response(message, context):
     if context:
         context_text = f"\nContesto: {context['user_question'][:100]}"
 
-    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics.
+    prompt = f"""Sei un analista finanziario senior di FinSecure Analytics che risponde in LINGUA ITALIANA.
 {context_text}
 
 DOMANDA:
 {message}
 
-Non sono disponibili dati analitici. Rispondi in modo utile:
+Non sono disponibili dati analitici. Rispondi in LINGUA ITALIANA in modo utile:
 - Se chiede capacità → spiega cosa puoi fare
 - Se vaga → chiedi chiarimenti
 - Se dati non disponibili → indica cosa serve
