@@ -1,4 +1,5 @@
 """
+report_generator.py
 Generazione report PDF
 """
 def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent/outputs", dashboard_path=None):
