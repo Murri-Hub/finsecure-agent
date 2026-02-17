@@ -14,34 +14,8 @@ import os
 import re
 import torch
 
-# --- CONFIGURAZIONE MODELLI LOCALI ---
-Settings.embed_model = HuggingFaceEmbedding(
-    model_name="BAAI/bge-small-en-v1.5"
-)
-
-bnb_config = BitsAndBytesConfig(    #Tipo di quantizzazione richiamata nell'LLM
-    load_in_4bit=True,              #Carica il modello Mistral in 4bit, per non avere problemi di VRAM
-    bnb_4bit_quant_type="nf4",      #Tipo di quantizzazione 4bit, più adatto a limitare allucinazioni
-    bnb_4bit_compute_dtype=torch.float16,   #Compute in float16, per limitare le risposte rumorose tipiche del 4bit
-    bnb_4bit_use_double_quant=True,         #Riduce errori numerici
-)
-
-Settings.llm = HuggingFaceLLM(
-    model_name="mistralai/Mistral-7B-Instruct-v0.2",        #Modello da caricare
-    tokenizer_name="mistralai/Mistral-7B-Instruct-v0.2",    #Tokenizer
-    context_window=2048,      #Limite massimo di token che il modello può “vedere” contemporaneamente
-    max_new_tokens=500,       #Numero massimo di token generati in output dal modello, per essere sintetico ma evitare troncamenti
-    generate_kwargs = {     #Parametri avanzati per la generazione del testo
-    "do_sample": True,      #Maggiore libertà di scelta tra token, adatto a Mistral
-    "temperature": 0.4,     #Equilibrio tra creatività e rigidità [0,1]
-    "top_p": 0.9,           #Sceglie il token successivo solo tra quelli che coprono il 90% della probabilità totale.
-    "repetition_penalty": 1.1,    #Limita leggermente la libertà di ripetizioni, rispetto al valore 1
-    },
-    model_kwargs={
-    "quantization_config": bnb_config,  #Quantizzazione
-    },
-    device_map="auto",                  #Scelta automatica di uso CPU o GPU
-)
+from config.models import setup_models
+setup_models()
 
 # --- PATH ---
 BASE_DIR = "/content/finsecure-agent"
@@ -265,6 +239,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
