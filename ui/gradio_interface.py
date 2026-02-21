@@ -37,8 +37,6 @@ async def audit_completo(progress=gr.Progress()):
         "Ci sono omissioni nel report Q2 2024?",
         "Come si confrontano Q1 e Q2 2024?",
         "Il documento è conforme alle regole di compliance?",
-        "Qual è la predizione del trend di rischio per Q3?",
-        "Fai una simulazione di scenario di crisi per Q2 2024.",
     ]
 
     results = {
