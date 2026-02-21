@@ -122,9 +122,17 @@ def agent_answer(question: str) -> str:
             return f"Errore in build_agent: {type(e).__name__}: {str(e)}"
     
     try:
-        loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(_agent.run(question))
+        response = asyncio.get_event_loop().run_until_complete(_agent.run(question))
         return str(response)
+    except RuntimeError:
+        # Fallback: crea un nuovo event loop
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            response = loop.run_until_complete(_agent.run(question))
+            return str(response)
+        finally:
+            loop.close()
     except Exception as e:
         return f"Errore in chat: {type(e).__name__}: {str(e)}"
 
@@ -158,6 +166,7 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
 
 
