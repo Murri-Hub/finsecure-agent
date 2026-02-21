@@ -7,6 +7,7 @@ from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageCon
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
 from tools.tools import find_omissions, compare_periods, audit_compliance, predict_risk_trend
 from tools.simulation import simulate_risk_scenario
+from config.settings import BASE_DIR, RAW_DATA_DIR, PROCESSED_DIR, OUTPUT_DIR
 from utils.color import B, X        # ANSI per print in grassetto
 import os
 import re
@@ -235,6 +236,7 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
 
