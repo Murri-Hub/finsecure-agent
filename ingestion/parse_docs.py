@@ -4,6 +4,7 @@ Parsing e indicizzazione documenti finanziari
 """
 import os
 from llama_index.core import VectorStoreIndex, Document
+from config.settings import BASE_DIR, RAW_DATA_DIR, PROCESSED_DIR, OUTPUT_DIR
 
 # PATH
 BASE_DIR = "/content/finsecure-agent"
@@ -53,5 +54,6 @@ def parse_and_index():
 
 if __name__ == "__main__":
     parse_and_index()
+
 
 
