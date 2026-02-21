@@ -1,5 +1,5 @@
 """
-tools.py
+tools/tools.py
 Tool agentici per audit finanziari e gestione del rischio
 """
 import re
@@ -293,3 +293,4 @@ def scenario_tool(scenario_type: str = "crisis") -> str:
     from tools.simulation import simulate_risk_scenario
     chunks, _ = retrieve_chunks("ricavi margine rischio liquidità")
     return simulate_risk_scenario(chunks, scenario_type)
+
