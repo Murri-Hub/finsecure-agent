@@ -119,3 +119,32 @@ def agent_answer(question: str) -> str:
     response = _agent.chat(question)
     return str(response)
 
+def extract_metrics_for_dashboard() -> tuple[dict, dict]:
+    """
+    Estrae metriche Q1 e Q2 direttamente dai chunk indicizzati,
+    senza dipendere dal formato testuale della risposta del ReActAgent.
+    """
+    import re
+
+    chunks_q1 = retrieve_chunks_by_metadata("Q1 2024")
+    chunks_q2 = retrieve_chunks_by_metadata("Q2 2024")
+
+    def extract_from_chunks(chunks):
+        metrics = {}
+        all_text = " ".join(chunks).lower()
+
+        match = re.search(r'ricavi.*?(\d+[,.]?\d*)\s*milioni', all_text)
+        if match:
+            metrics['ricavi'] = float(match.group(1).replace(',', '.'))
+
+        match = re.search(r'margine operativo.*?(\d+[,.]?\d*)%', all_text)
+        if match:
+            metrics['margine'] = float(match.group(1).replace(',', '.'))
+
+        match = re.search(r'rischio di credito.*?(\d+[,.]?\d*)\s*milioni', all_text)
+        if match:
+            metrics['rischio'] = float(match.group(1).replace(',', '.'))
+
+        return metrics
+
+    return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
