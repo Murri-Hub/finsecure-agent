@@ -1,19 +1,21 @@
-# models.py
+# config/models.py
 from llama_index.core import Settings
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.huggingface import HuggingFaceLLM
+from llama_index.llms.groq import Groq
 from transformers import BitsAndBytesConfig
 import torch
+import os
+
+mistral_llm = None  # variabile globale accessibile dagli altri moduli
 
 def setup_models():
-    """Configura embed_model e LLM"""
-    
-    # Embeddings
+    # Embeddings - invariati
     Settings.embed_model = HuggingFaceEmbedding(
         model_name="BAAI/bge-small-en-v1.5"
     )
     
-    # LLM con quantizzazione 4-bit
+    # Mistral-7B locale per i tool
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
@@ -21,7 +23,7 @@ def setup_models():
         bnb_4bit_use_double_quant=True,
     )
     
-    Settings.llm = HuggingFaceLLM(
+    mistral = HuggingFaceLLM(
         model_name="mistralai/Mistral-7B-Instruct-v0.2",
         tokenizer_name="mistralai/Mistral-7B-Instruct-v0.2",
         context_window=2048,
@@ -32,8 +34,17 @@ def setup_models():
             "top_p": 0.9,
             "repetition_penalty": 1.1,
         },
-        model_kwargs={
-            "quantization_config": bnb_config,
-        },
+        model_kwargs={"quantization_config": bnb_config},
         device_map="auto",
     )
+    
+    # Groq per il ragionamento ReAct
+    groq_llm = Groq(
+        model="mixtral-8x7b-32768",
+        api_key=os.environ.get("GROQ_API_KEY"),
+    )
+    
+    # ReActAgent usa Groq, i tool usano Mistral
+    Settings.llm = groq_llm
+    Settings.mistral = mistral
+```
