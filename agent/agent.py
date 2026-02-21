@@ -1,5 +1,5 @@
 """
-agent.py
+agent/agent.py
 Agente AI con ReActAgent per audit finanziari
 """
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
@@ -166,3 +166,4 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
