@@ -5,15 +5,11 @@ Agente AI con tool per audit finanziari
 
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
-from llama_index.core.node_parser import SentenceSplitter
-from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from llama_index.llms.huggingface import HuggingFaceLLM
 from tools.tools import find_omissions, compare_periods, audit_compliance, predict_risk_trend
+from tools.simulation import simulate_risk_scenario
 from utils.color import B, X        # ANSI per print in grassetto
-from transformers import BitsAndBytesConfig
 import os
 import re
-import torch
 
 from config.models import setup_models
 setup_models()
@@ -239,5 +235,6 @@ if __name__ == "__main__":
         print("\nRisposta:\n")
         print(agent_answer(q))
         print("\n" + "-" * 60 + "\n")
+
 
 
