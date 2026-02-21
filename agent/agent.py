@@ -101,11 +101,10 @@ def build_agent():
         ),
     ]
     
-    return ReActAgent.from_tools(
+    return FunctionCallingAgent.from_tools(
         tools,
         llm=Settings.llm,
         verbose=True,
-        max_iterations=10,
     )
 
 # AGENT CACHATO
@@ -154,6 +153,7 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
 
 
