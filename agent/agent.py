@@ -105,7 +105,7 @@ def build_agent():
         tools=tools,
         llm=Settings.llm,
         verbose=True,
-        max_iterations=10,
+        max_iterations=5,
     )
 
 # AGENT CACHATO
@@ -166,6 +166,7 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
 
 
