@@ -5,7 +5,7 @@ Agente AI con ReActAgent per audit finanziari
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage, Settings
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
 from llama_index.core.tools import FunctionTool
-from llama_index.core.agent import ReActAgent
+from llama_index.core.agent.react.base import ReActAgent
 from tools.tools import omissions_tool, comparison_tool, compliance_tool, risk_trend_tool, scenario_tool
 from config.settings import RAW_DATA_DIR, PROCESSED_DIR
 import os
@@ -154,4 +154,5 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
