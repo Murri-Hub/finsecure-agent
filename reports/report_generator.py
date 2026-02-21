@@ -1,5 +1,5 @@
 """
-report_generator.py
+reports/report_generator.py
 Generazione report PDF
 """
 from config.settings import OUTPUT_DIR
