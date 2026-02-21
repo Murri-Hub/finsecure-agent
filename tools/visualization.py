@@ -1,5 +1,5 @@
 """
-visualization.py
+tools/visualization.py
 Dashboard e visualizzazioni
 """
 from config.settings import OUTPUT_DIR
@@ -164,6 +164,7 @@ def generate_dashboard(q1_data, q2_data, output_dir=None):
     plt.close(fig)
 
     return output_path
+
 
 
 
