@@ -223,3 +223,73 @@ def predict_risk_trend(historical_data):
         results.append("Trend stabile: Variazione contenuta")
     
     return "\n".join(results)
+
+# ============================================================================
+# WRAPPER AUTOCONTENUTI PER REACT AGENT
+# ============================================================================
+
+def omissions_tool(question: str) -> str:
+    """
+    Analizza i documenti finanziari e identifica omissioni, 
+    vaghezze o dati mancanti.
+    """
+    from agent.agent import retrieve_chunks
+    chunks, _ = retrieve_chunks(question)
+    return find_omissions(chunks)
+
+
+def comparison_tool(question: str) -> str:
+    """
+    Confronta le metriche finanziarie tra Q1 2024 e Q2 2024,
+    identificando variazioni di ricavi, margine e rischio.
+    """
+    from agent.agent import retrieve_chunks_by_metadata
+    chunks_q1 = retrieve_chunks_by_metadata("Q1 2024")
+    chunks_q2 = retrieve_chunks_by_metadata("Q2 2024")
+    return compare_periods(chunks_q1, chunks_q2)
+
+
+def compliance_tool(question: str) -> str:
+    """
+    Verifica la conformità normativa dei documenti finanziari,
+    cercando violazioni, eccezioni o sezioni mancanti.
+    """
+    from agent.agent import retrieve_chunks
+    chunks, _ = retrieve_chunks(question)
+    return audit_compliance(chunks)
+
+
+def risk_trend_tool(question: str) -> str:
+    """
+    Predice il trend del rischio per Q3 2024 usando regressione
+    lineare sui dati storici di Q1 e Q2.
+    """
+    from agent.agent import retrieve_chunks_by_metadata
+    
+    chunks_q1 = retrieve_chunks_by_metadata("Q1 2024")
+    chunks_q2 = retrieve_chunks_by_metadata("Q2 2024")
+    
+    def extract_risk(chunks):
+        for chunk in chunks:
+            match = re.search(r'rischio.*?(\d+[,.]?\d*)\s*milioni', chunk.lower())
+            if match:
+                return float(match.group(1).replace(',', '.'))
+        return None
+    
+    q1_risk = extract_risk(chunks_q1)
+    q2_risk = extract_risk(chunks_q2)
+    
+    if q1_risk is not None and q2_risk is not None:
+        return predict_risk_trend({'q1_risk': q1_risk, 'q2_risk': q2_risk})
+    return "Impossibile predire: dati storici insufficienti."
+
+
+def scenario_tool(scenario_type: str = "crisis") -> str:
+    """
+    Simula uno scenario di rischio finanziario applicando variazioni
+    alle metriche attuali. Scenari disponibili: crisis, growth, interest_hike.
+    """
+    from agent.agent import retrieve_chunks
+    from tools.simulation import simulate_risk_scenario
+    chunks, _ = retrieve_chunks("ricavi margine rischio liquidità")
+    return simulate_risk_scenario(chunks, scenario_type)
