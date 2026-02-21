@@ -16,7 +16,7 @@ Utilizza LlamaIndex ReActAgent per ragionamento agentico su documenti reali.
 ```
 app.py                  # Entry point
 config/
-  models.py             # Setup Mistral-7B + embeddings
+  models.py             # Setup LLaMA 3.3 70B (Groq) + embeddings
   settings.py           # Path configurabili via env
 agent/
   agent.py              # ReActAgent + indice vettoriale cachato
@@ -38,16 +38,16 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Per eseguire fuori da Colab, imposta la variabile d'ambiente:
+Per eseguire fuori da Colab, impostare la variabile d'ambiente:
 ```bash
 export FINSECURE_BASE_DIR=/path/to/finsecure-agent
 python app.py
 ```
 
 ## Tecnologie
-
 - LlamaIndex ReActAgent + RAG con filtri su metadata
-- Mistral-7B-Instruct-v0.2 (quantizzazione 4-bit con BitsAndBytes)
+- LLaMA 3.3 70B via Groq API (ragionamento agentico e tool calling)
+- BAAI/bge-small-en-v1.5 per embeddings
 - scikit-learn per predizione trend
 - Matplotlib/Seaborn per visualizzazioni
 - FPDF per report PDF
