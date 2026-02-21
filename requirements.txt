@@ -7,6 +7,7 @@
 llama-index
 llama-index-embeddings-huggingface
 llama-index-llms-huggingface
+llama-index-llms-groq
 
 # --- Transformers stack ---
 transformers
