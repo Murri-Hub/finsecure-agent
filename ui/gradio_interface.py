@@ -5,7 +5,7 @@ Interfaccia Gradio per FinSecure AI Audit Agent
 import gradio as gr
 import shutil
 import os
-from agent.agent import agent_answer
+from agent.agent import agent_answer, extract_metrics_for_dashboard
 
 
 def chat(message, history):
@@ -20,7 +20,6 @@ def audit_completo(progress=gr.Progress()):
     """Audit completo automatico"""
     from reports.report_generator import generate_audit_report
     from tools.visualization import generate_dashboard
-    import re
 
     domande = [
         "Ci sono omissioni nel report Q2 2024?",
@@ -38,8 +37,6 @@ def audit_completo(progress=gr.Progress()):
     }
 
     risultati_testo = []
-    q1_metrics = {}
-    q2_metrics = {}
 
     for i, domanda in enumerate(domande):
         progress((i + 1) / len(domande), desc=f"Analisi {i+1}/{len(domande)}...")
@@ -48,21 +45,11 @@ def audit_completo(progress=gr.Progress()):
             risposta = agent_answer(domanda)
             risultati_testo.append(f"### {domanda}\n\n{risposta}\n\n{'='*80}\n")
 
-            # Raccoglie risultati per il PDF
             domanda_lower = domanda.lower()
             if "omission" in domanda_lower or "mancanza" in domanda_lower:
                 results['omissions'] = risposta
             elif "confront" in domanda_lower or "confrontano" in domanda_lower:
                 results['comparison'] = risposta
-                # Estrae metriche per dashboard
-                ricavi_match = re.search(r'Q1:\s*(\d+\.?\d*)M.*?Q2:\s*(\d+\.?\d*)M', risposta)
-                if ricavi_match:
-                    q1_metrics['ricavi'] = float(ricavi_match.group(1))
-                    q2_metrics['ricavi'] = float(ricavi_match.group(2))
-                margine_match = re.search(r'(\d+\.?\d*)%.*?→.*?(\d+\.?\d*)%', risposta)
-                if margine_match:
-                    q1_metrics['margine'] = float(margine_match.group(1))
-                    q2_metrics['margine'] = float(margine_match.group(2))
             elif "compliance" in domanda_lower or "conforme" in domanda_lower:
                 results['compliance'] = risposta
             elif "simulazione" in domanda_lower or "scenario" in domanda_lower:
@@ -75,10 +62,14 @@ def audit_completo(progress=gr.Progress()):
 
     progress(1.0, desc="Generazione report...")
 
-    # Dashboard
+    # Dashboard - metriche estratte direttamente dai chunk
     dashboard_path = None
-    if q1_metrics and q2_metrics:
-        dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
+    try:
+        q1_metrics, q2_metrics = extract_metrics_for_dashboard()
+        if q1_metrics and q2_metrics:
+            dashboard_path = generate_dashboard(q1_metrics, q2_metrics)
+    except Exception as e:
+        risultati_testo.append(f"\nErrore estrazione metriche: {str(e)}")
 
     # PDF
     pdf_tmp = None
