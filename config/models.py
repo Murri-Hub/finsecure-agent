@@ -47,4 +47,3 @@ def setup_models():
     # ReActAgent usa Groq, i tool usano Mistral
     Settings.llm = groq_llm
     Settings.mistral = mistral
-```
