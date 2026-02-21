@@ -30,7 +30,7 @@ def main():
     demo.queue().launch(
         share=True,
         inline=False,
-        debug=False
+        debug=True
     )
 
 if __name__ == "__main__":
