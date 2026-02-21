@@ -149,7 +149,7 @@ def create_interface():
 
                 **Tecnologie:**
                 - LlamaIndex ReActAgent per ragionamento agentico
-                - Mistral-7B (4-bit quantized) per risposte conversazionali
+                - LLaMA 3.3 70B via Groq API per tool calling e ragionamento
                 - scikit-learn per predizioni ML
                 - Matplotlib/Seaborn per visualizzazioni
                 - FPDF per report PDF
