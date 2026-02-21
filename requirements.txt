@@ -2,13 +2,11 @@
 # FinSecure AI Audit Agent
 # Colab Python 3.12 - Stable
 # ===============================
-
 # --- LlamaIndex ---
 llama-index
 llama-index-embeddings-huggingface
 llama-index-llms-huggingface
 llama-index-llms-groq
-
 # --- Transformers stack ---
 transformers
 huggingface-hub
@@ -16,21 +14,17 @@ accelerate
 bitsandbytes
 sentence-transformers
 torch
-
 # --- Scientific ---
 numpy
 pandas
 scikit-learn
-
 # --- Visualization ---
 matplotlib
 seaborn
-
 # --- PDF ---
 fpdf
-
 # --- Utilities ---
 python-dateutil
-
+nest_asyncio
 # --- Web ---
 gradio
