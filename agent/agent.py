@@ -111,12 +111,11 @@ def build_agent():
 # AGENT CACHATO
 _agent = None
 
-async def _run_agent(question: str) -> str:
-    return await _agent.run(question)
-
 def agent_answer(question: str) -> str:
     global _agent
     import asyncio
+    import nest_asyncio
+    
     if _agent is None:
         try:
             _agent = build_agent()
@@ -124,10 +123,8 @@ def agent_answer(question: str) -> str:
             return f"Errore in build_agent: {type(e).__name__}: {str(e)}"
     
     try:
-        import nest_asyncio
         nest_asyncio.apply()
-        loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(_agent.run(question))
+        response = asyncio.run(_agent.run(question))
         return str(response)
     except Exception as e:
         return f"Errore in chat: {type(e).__name__}: {str(e)}"
@@ -162,6 +159,7 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
 
 
