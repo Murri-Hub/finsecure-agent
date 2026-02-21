@@ -52,9 +52,7 @@ def launch_interface():
 
 
 def main():
-    """Workflow completo: inizializza + lancia interfaccia"""
+    from config.models import setup_models
+    setup_models()       # Prima di tutto
     initialize()
     launch_interface()
-
-if __name__ == "__main__":
-    main()
