@@ -2,9 +2,11 @@
 report_generator.py
 Generazione report PDF
 """
-from config.settings import BASE_DIR, RAW_DATA_DIR, PROCESSED_DIR, OUTPUT_DIR
+from config.settings import OUTPUT_DIR
 
-def generate_audit_report(analysis_results, output_dir="/content/finsecure-agent/outputs", dashboard_path=None):
+def generate_audit_report(analysis_results, output_dir=None, dashboard_path=None):
+    if output_dir is None:
+        output_dir = OUTPUT_DIR
     """
     Genera report PDF professionale con analisi finanziarie
 
