@@ -1,5 +1,5 @@
 """
-parse_docs.py
+ingestion/parse_docs.py
 Parsing e indicizzazione documenti finanziari
 """
 import os
@@ -47,3 +47,4 @@ def parse_and_index():
 
 if __name__ == "__main__":
     parse_and_index()
+
