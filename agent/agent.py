@@ -124,11 +124,14 @@ def agent_answer(question: str) -> str:
             return f"Errore in build_agent: {type(e).__name__}: {str(e)}"
     
     try:
+        import nest_asyncio
+        nest_asyncio.apply()
         loop = asyncio.get_event_loop()
-        response = loop.run_until_complete(_run_agent(question))
+        response = loop.run_until_complete(_agent.run(question))
         return str(response)
     except Exception as e:
         return f"Errore in chat: {type(e).__name__}: {str(e)}"
+
 
 def extract_metrics_for_dashboard() -> tuple[dict, dict]:
     """
@@ -159,6 +162,7 @@ def extract_metrics_for_dashboard() -> tuple[dict, dict]:
         return metrics
 
     return extract_from_chunks(chunks_q1), extract_from_chunks(chunks_q2)
+
 
 
 
