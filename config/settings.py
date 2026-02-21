@@ -1,5 +1,4 @@
-config/settings.py
-
+# config/settings.py
 import os
 
 BASE_DIR = os.getenv(
