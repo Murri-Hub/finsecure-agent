@@ -2,6 +2,8 @@
 visualization.py
 Dashboard e visualizzazioni
 """
+from config.settings import BASE_DIR, RAW_DATA_DIR, PROCESSED_DIR, OUTPUT_DIR
+
 def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     """
     Genera visualizzazioni comparative tra Q1 e Q2
@@ -160,4 +162,5 @@ def generate_dashboard(q1_data, q2_data, output_dir="/outputs"):
     plt.close(fig)
 
     return output_path
+
 
