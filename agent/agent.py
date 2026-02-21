@@ -10,8 +10,6 @@ from tools.tools import omissions_tool, comparison_tool, compliance_tool, risk_t
 from config.settings import RAW_DATA_DIR, PROCESSED_DIR
 import os
 
-from config.models import setup_models
-
 # INDICE CACHATO - evita ricostruzione ad ogni chiamata
 _index = None
 
@@ -120,3 +118,4 @@ def agent_answer(question: str) -> str:
     
     response = _agent.chat(question)
     return str(response)
+
