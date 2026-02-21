@@ -5,18 +5,30 @@ Interfaccia Gradio per FinSecure AI Audit Agent
 import gradio as gr
 import shutil
 import os
-from agent.agent import agent_answer, extract_metrics_for_dashboard
+from llama_index.core import Settings
+from agent.agent import build_agent, extract_metrics_for_dashboard
+
+# AGENT GLOBALE
+_agent = None
+
+def get_agent():
+    global _agent
+    if _agent is None:
+        _agent = build_agent()
+    return _agent
 
 
-def chat(message, history):
+async def chat(message, history):
     """Funzione chat per Gradio - delega tutto al ReActAgent"""
     try:
-        return agent_answer(message)
+        agent = get_agent()
+        response = await agent.run(message)
+        return str(response)
     except Exception as e:
         return f"Errore nell'elaborazione: {str(e)}\n\nRiformula la domanda."
 
 
-def audit_completo(progress=gr.Progress()):
+async def audit_completo(progress=gr.Progress()):
     """Audit completo automatico"""
     from reports.report_generator import generate_audit_report
     from tools.visualization import generate_dashboard
@@ -37,12 +49,13 @@ def audit_completo(progress=gr.Progress()):
     }
 
     risultati_testo = []
+    agent = get_agent()
 
     for i, domanda in enumerate(domande):
         progress((i + 1) / len(domande), desc=f"Analisi {i+1}/{len(domande)}...")
 
         try:
-            risposta = agent_answer(domanda)
+            risposta = str(await agent.run(domanda))
             risultati_testo.append(f"### {domanda}\n\n{risposta}\n\n{'='*80}\n")
 
             domanda_lower = domanda.lower()
@@ -62,7 +75,7 @@ def audit_completo(progress=gr.Progress()):
 
     progress(1.0, desc="Generazione report...")
 
-    # Dashboard - metriche estratte direttamente dai chunk
+    # Dashboard
     dashboard_path = None
     try:
         q1_metrics, q2_metrics = extract_metrics_for_dashboard()
