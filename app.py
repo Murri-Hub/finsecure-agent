@@ -16,6 +16,12 @@ from config.models import setup_models
 from ingestion.parse_docs import parse_and_index
 from ui.gradio_interface import create_interface
 
+# API key Groq - necessaria per il ragionamento ReActAgent
+# Chiave ottenibile su https://console.groq.com
+from getpass import getpass
+
+os.environ["GROQ_API_KEY"] = getpass("Inserisci la tua Groq API Key: ")
+
 def main():
     print("Caricamento modelli...")
     setup_models()
