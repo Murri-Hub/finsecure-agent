@@ -2,8 +2,8 @@
 # FinSecure AI Audit Agent
 # Colab Python 3.12 - Stable
 # ===============================
-# --- LlamaIndex ---
-llama-index==0.14.15
+# --- LlamaIndex (solo componenti necessari) ---
+llama-index-core==0.14.15
 llama-index-embeddings-huggingface==0.6.1
 llama-index-llms-groq==0.4.1
 # --- Transformers stack ---
